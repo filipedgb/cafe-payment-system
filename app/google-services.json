@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "964997710742",
+    "firebase_url": "https://cmovproject.firebaseio.com",
+    "project_id": "cmovproject",
+    "storage_bucket": "cmovproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964997710742:android:9583e336df929d26",
+        "android_client_info": {
+          "package_name": "com.example.filipedgb.cmovproj1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "964997710742-2mprq1g4o9rat0t5phi9micr1l8vfvid.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.filipedgb.cmovproj1",
+            "certificate_hash": "251EF0F9FCC57FB55F0BAC76257C5D50CAE139CB"
+          }
+        },
+        {
+          "client_id": "964997710742-ncdqk7h794ijevgo4dfm6op4r9ubt5rt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP9s6mTjiVZB6E5tnFJiSRUCgY2al6yxw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "964997710742-ncdqk7h794ijevgo4dfm6op4r9ubt5rt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
