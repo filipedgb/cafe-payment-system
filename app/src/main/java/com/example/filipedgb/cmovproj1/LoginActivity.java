@@ -47,6 +47,9 @@ import java.util.List;
 import static android.Manifest.permission.READ_CONTACTS;
 
 
+import  com.example.filipedgb.cmovproj1.classes.*;
+
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -88,8 +91,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         app= FirebaseApp.getInstance();
         auth=FirebaseAuth.getInstance(app);
+        Log.e("user",auth.getCurrentUser().getUid());
+        Log.e("user",auth.getCurrentUser().getEmail());
+        auth.signOut();
+       // Log.e("user",auth.getCurrentUser().getUid());
+
         database= FirebaseDatabase.getInstance(app);
-        dbRef=database.getReference("users");
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -214,10 +221,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //checking if success
                     if(task.isSuccessful()){
-                        dbRef.push().setValue(auth.getCurrentUser().getUid(),"teste");
+                        Log.e("teste",auth.getCurrentUser().getUid()+"");
+                        dbRef=database.getReference("user_meta");
+                        DatabaseReference child=dbRef.child(auth.getCurrentUser().getUid());
+                        User user= new User("Filipe Miranda","96526341638416","6593");
+                        child.setValue(user);
+                       // child.push().setValue(user);
                         Log.e("Uid",auth.getCurrentUser().getUid());
                     }else{
-                        //display some message here
+                        Log.e("teste2","3333");
                     }
 
                 }
