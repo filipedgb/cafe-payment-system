@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,9 +29,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.auth.AuthResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +77,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private FirebaseApp app;
     private FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private FirebaseStorage storageUsers;
+    private DatabaseReference dbRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +88,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         app= FirebaseApp.getInstance();
         auth=FirebaseAuth.getInstance(app);
+        database= FirebaseDatabase.getInstance(app);
+        dbRef=database.getReference("users");
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -193,9 +208,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+
+                    //checking if success
+                    if(task.isSuccessful()){
+                        dbRef.push().setValue(auth.getCurrentUser().getUid(),"teste");
+                        Log.e("Uid",auth.getCurrentUser().getUid());
+                    }else{
+                        //display some message here
+                    }
+
+                }
+            });
+            //showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            //mAuthTask.execute((Void) null);
         }
     }
 
