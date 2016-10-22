@@ -16,7 +16,7 @@ public class CodeScreen extends AppCompatActivity {
 
         boolean finish = getIntent().getBooleanExtra("finishCode", false);
         if (finish) {
-            Intent i=new Intent(this, test.class);
+            Intent i=new Intent(this, MenuActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
@@ -27,7 +27,7 @@ public class CodeScreen extends AppCompatActivity {
 
 
     public void codeAccept(View view) {
-        Intent intent = new Intent(getApplicationContext(), test.class);
+        Intent intent = new Intent(getApplicationContext(), Teste.class);
         intent.putExtra("finishCode", true);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
         startActivity(intent);

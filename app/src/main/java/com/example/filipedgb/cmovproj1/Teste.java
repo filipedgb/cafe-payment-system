@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class test extends AppCompatActivity {
+public class Teste extends AppCompatActivity {
 
 
     private FirebaseApp app;
