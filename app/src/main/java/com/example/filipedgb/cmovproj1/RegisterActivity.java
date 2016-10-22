@@ -62,14 +62,19 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+
+
         app = FirebaseApp.getInstance();
         auth = FirebaseAuth.getInstance(app);
         database = FirebaseDatabase.getInstance(app);
+        dbRef=FirebaseDatabase.getInstance().getReference();
+
+        String c= getIntent().getStringExtra("code");
 
         boolean finish = getIntent().getBooleanExtra("finishRegister", false);
         if (finish) {
             Intent i=new Intent(this, CodeScreen.class);
-            i.putExtra("code",code);
+            i.putExtra("code",c);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
@@ -100,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         boolean error = false;
-/*
+
         if (name == "") {
             ((TextView) findViewById(R.id.name_register)).setError("Preencha este campo");
             error = true;
@@ -125,7 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (error) {
             return;
         }
-        */
+
         code="";
         Random rand = new Random();
 
@@ -137,14 +142,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         Log.e("code",code);
 
-        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-        intent.putExtra("finishRegister", true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-        startActivity(intent);
-        finish();
 
 
-        /*
+
         Log.e("cred","email:"+email+" pass:"+password);
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -153,15 +153,18 @@ public class RegisterActivity extends AppCompatActivity {
                 //checking if success
                 if(task.isSuccessful()){
                     Log.e("teste",auth.getCurrentUser().getUid()+"");
-                    dbRef=database.getReference("user_meta");
-                    DatabaseReference child=dbRef.child(auth.getCurrentUser().getUid());
                     User user= new User(name,cardNumber,code,username);
-                    child.setValue(user);
-                    child.push().setValue(user);
+
+                    dbRef.child("user_meta").child(auth.getCurrentUser().getUid()).setValue(user);
                     Log.e("register","successful");
 
 
-
+                    Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                    intent.putExtra("finishRegister", true);
+                    intent.putExtra("code", code);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                    startActivity(intent);
+                    finish();
 
                 }else{
 
@@ -173,7 +176,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-        */
     }
 
 }
