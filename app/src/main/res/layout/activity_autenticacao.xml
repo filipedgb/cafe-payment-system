@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="#e6cca6"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+   >
+
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:layout_marginTop="20dp"
+        android:id="@+id/email_login"
+        android:hint="Email"
+        android:layout_below="@+id/imageView10"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/password_login"
+        android:hint="Password"
+        android:layout_below="@+id/email_login"
+        android:layout_alignLeft="@+id/email_login"
+        android:layout_alignStart="@+id/email_login" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Autenticar-se"
+        android:id="@+id/button2"
+        android:onClick="login"
+        android:background="@null"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@+id/password_login"
+        android:layout_marginTop="1dp"
+        android:layout_alignLeft="@+id/password_login"
+        android:layout_alignStart="@+id/password_login"
+        android:layout_alignRight="@+id/password_login"
+        android:layout_alignEnd="@+id/password_login" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Registar"
+        android:id="@+id/register_button"
+        android:onClick="register"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@null"
+        android:layout_below="@+id/button2"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_alignStart="@+id/button2"
+        android:layout_alignRight="@+id/button2"
+        android:layout_alignEnd="@+id/button2" />
+
+    <ImageView
+        android:layout_width="110dp"
+        android:layout_height="140dp"
+        android:id="@+id/imageView10"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_launcher" />
+
+</RelativeLayout>
+
+

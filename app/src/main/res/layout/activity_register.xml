@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_register"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#e6cca6"
+    tools:context="com.example.filipedgb.cmovproj1.RegisterActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView5"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoComplete|textPersonName"
+                android:ems="10"
+                android:layout_marginTop="20dp"
+                android:id="@+id/name_register"
+                android:hint="Nome Completo"
+                android:layout_below="@+id/imageView10"
+                android:layout_centerHorizontal="true" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/email_register"
+                android:hint="Email"
+                android:layout_below="@+id/name_register"
+                android:layout_alignLeft="@+id/name_register"
+                android:layout_alignStart="@+id/name_register"
+                android:inputType="textAutoComplete|textEmailAddress" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/username_register"
+                android:hint="Nome de Utilizador"
+                android:layout_below="@+id/email_register"
+                android:layout_alignLeft="@+id/email_register"
+                android:layout_alignStart="@+id/email_register"
+                android:inputType="text" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/password_register"
+                android:hint="Palavra Pass"
+                android:layout_below="@+id/username_register"
+                android:layout_alignLeft="@+id/username_register"
+                android:layout_alignStart="@+id/username_register"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/card_register"
+                android:hint="Numero do Cartão"
+                android:layout_below="@+id/password_register"
+                android:layout_alignLeft="@+id/password_register"
+                android:layout_alignStart="@+id/password_register"
+                android:inputType="number" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Registar"
+                android:id="@+id/register_button2"
+                android:onClick="register"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="#ffff"
+                android:layout_below="@+id/card_register"
+                android:layout_marginTop="20dp"
+                android:layout_alignLeft="@+id/card_register"
+                android:layout_alignStart="@+id/card_register"
+                android:layout_alignRight="@+id/card_register"
+                android:layout_alignEnd="@+id/card_register"
+                android:elevation="0dp" />
+
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/imageView10"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/ic_launcher" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>
