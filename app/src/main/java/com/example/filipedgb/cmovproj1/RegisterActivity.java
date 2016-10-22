@@ -1,9 +1,11 @@
 package com.example.filipedgb.cmovproj1;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -66,7 +68,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         boolean finish = getIntent().getBooleanExtra("finishRegister", false);
         if (finish) {
-            startActivity(new Intent(this, test.class));
+            Intent i=new Intent(this, CodeScreen.class);
+            i.putExtra("code",code);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
             finish();
             return;
         }
@@ -95,15 +100,15 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         boolean error = false;
-
+/*
         if (name == "") {
             ((TextView) findViewById(R.id.name_register)).setError("Preencha este campo");
             error = true;
         }
-        /*if (!validateEmail(email)) {
+        if (!validateEmail(email)) {
             ((TextView) findViewById(R.id.email_register)).setError("Preencha este campo correctamente");
             error = true;
-        }*/
+        }
         if (username == "") {
             ((TextView) findViewById(R.id.username_register)).setError("Preencha este campo");
             error = true;
@@ -120,6 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (error) {
             return;
         }
+        */
         code="";
         Random rand = new Random();
 
@@ -131,7 +137,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         Log.e("code",code);
 
+        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+        intent.putExtra("finishRegister", true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+        startActivity(intent);
+        finish();
 
+
+        /*
         Log.e("cred","email:"+email+" pass:"+password);
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -147,11 +160,8 @@ public class RegisterActivity extends AppCompatActivity {
                     child.push().setValue(user);
                     Log.e("register","successful");
 
-                    Intent intent = new Intent(getApplicationContext(), test.class);
-                    intent.putExtra("finishRegister", true);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-                    startActivity(intent);
-                    finish();
+
+
 
                 }else{
 
@@ -163,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
+        */
     }
 
 }

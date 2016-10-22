@@ -13,4 +13,5 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="code_message">Por motivos de segurança, irá ser pedido um código a cada compra.\n\nO seu código é:</string>
 </resources>
