@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,11 +84,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        name = findViewById(R.id.name_register).toString();
-        email = findViewById(R.id.email_register).toString();
-        username = findViewById(R.id.username_register).toString();
-        password = findViewById(R.id.password_register).toString();
-        cardNumber = findViewById(R.id.card_register).toString();
+        name = ((EditText)findViewById(R.id.name_register)).getText().toString();
+        email = ((EditText)findViewById(R.id.email_register)).getText().toString();
+        username = ((EditText)findViewById(R.id.username_register)).getText().toString();
+        password = ((EditText)findViewById(R.id.password_register)).getText().toString();
+        cardNumber =((EditText) findViewById(R.id.card_register)).getText().toString();
+
+
+
 
 
         boolean error = false;
@@ -140,10 +144,21 @@ public class RegisterActivity extends AppCompatActivity {
                     DatabaseReference child=dbRef.child(auth.getCurrentUser().getUid());
                     User user= new User(name,cardNumber,code,username);
                     child.setValue(user);
-                    // child.push().setValue(user);
+                    child.push().setValue(user);
+                    Log.e("register","successful");
+
+                    Intent intent = new Intent(getApplicationContext(), test.class);
+                    intent.putExtra("finishRegister", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                    startActivity(intent);
+                    finish();
 
                 }else{
-                    Log.e("teste2","3333");
+
+                    Log.e("register","error"+task.getException().getMessage());
+                    Context context = getApplicationContext();
+                    Toast toast = Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_LONG);
+                    toast.show();
                 }
 
             }
