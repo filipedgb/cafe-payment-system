@@ -10,11 +10,13 @@ public class User {
     private String name;
     private String cardNumber;
     private String code;
+    private String username;
 
-    public User(String name, String cardNumber, String code) {
+    public User(String name, String cardNumber, String code, String username) {
         this.name = name;
         this.cardNumber = cardNumber;
         this.code = code;
+        this.username=username;
     }
 
     public String getUid() {
@@ -50,4 +52,7 @@ public class User {
     }
 
 
+    public String getUsername() {
+        return username;
+    }
 }

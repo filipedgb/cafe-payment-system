@@ -100,22 +100,22 @@ public class LoginActivity extends AppCompatActivity  {
 
 
     public void login(View view) {
-        String email_txt=email.getText().toString();
-        String password_txt=password.getText().toString();
+        String email_txt = email.getText().toString();
+        String password_txt = password.getText().toString();
 
-        auth.signInWithEmailAndPassword(email_txt,password_txt).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        auth.signInWithEmailAndPassword(email_txt, password_txt).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 //checking if success
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Intent intent = new Intent(getApplicationContext(), test.class);
                     intent.putExtra("finishLogin", true);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
                     startActivity(intent);
                     finish();
-                }else{
-                    Log.e("teste2","3333");
+                } else {
+                    //Log.e("teste2","3333");
                     Context context = getApplicationContext();
                     Toast toast = Toast.makeText(context, "Conta inexistente ou password inválida", Toast.LENGTH_LONG);
                     toast.show();
@@ -123,12 +123,14 @@ public class LoginActivity extends AppCompatActivity  {
 
             }
         });
+    }
 
-
-
-
-
-
+    public void register(View view) {
+        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+        //intent.putExtra("finishLogin", true);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+        startActivity(intent);
+       // finish();
     }
 
 }
