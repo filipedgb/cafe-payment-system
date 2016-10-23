@@ -26,7 +26,8 @@
                 android:id="@+id/list_image"
                 android:layout_width="50dip"
                 android:layout_height="50dip"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                android:background="@android:color/transparent" />
         </LinearLayout>
 
         <!-- Title Of Song -->
@@ -67,10 +68,10 @@
 
 
             <ImageView
-                android:id="@+id/cart_minus_img"
+                android:id="@+id/minus_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/minus_sign" />
 
             <TextView
                 android:id="@+id/cart_product_quantity_tv"
@@ -84,10 +85,10 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/cart_plus_img"
+                android:id="@+id/plus_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/plus_sign" />
         </LinearLayout>
     </RelativeLayout>
 

@@ -59,38 +59,41 @@ public class MenuFragment extends Fragment {
 
                     int numberProducts = (int) dataSnapshot.getChildrenCount();
 
+                    View[]productViews = new View[numberProducts];
                     ImageView[] minusButtons = new ImageView[numberProducts];
                     ImageView[] plusButtons = new ImageView[numberProducts];
                     TextView[] qnty = new TextView[numberProducts];
+                    Product[] listOfAllProducts = new Product[numberProducts];
 
                     for (DataSnapshot child: dataSnapshot.getChildren()) {
 
-                        Product product = child.getValue(Product.class);
-                        Log.e("c",product.getName());
+                        listOfAllProducts[counter] = child.getValue(Product.class);
+                        Log.e("c",  listOfAllProducts[counter].getName());
                         LayoutInflater inflator= getActivity().getLayoutInflater();
-                        View v=inflator.inflate(R.layout.content_product,null);
+                        productViews[counter]=inflator.inflate(R.layout.content_product,null);
 
-                        TextView name= (TextView)v.findViewById(R.id.from_name);
-                        TextView price= (TextView)v.findViewById(R.id.plist_price_text);
-                        TextView quantity= (TextView)v.findViewById(R.id.cart_product_quantity_tv);
+                        TextView name= (TextView)   productViews[counter].findViewById(R.id.from_name);
+                        TextView price= (TextView)  productViews[counter].findViewById(R.id.plist_price_text);
 
-                        name.setText(product.getName());
-                        price.setText(product.getPrice().toString() + " €");
+                        qnty[counter]= (TextView)productViews[counter].findViewById(R.id.cart_product_quantity_tv);
 
-                        minusButtons[counter] = (ImageView) v.findViewById(R.id.cart_minus_img);
-                        minusButtons[counter].setOnClickListener(new MenuFragment.minusListener(quantity));
+                        name.setText(listOfAllProducts[counter].getName());
+                        price.setText(listOfAllProducts[counter].getPrice().toString() + " €");
 
-                        plusButtons[counter] = (ImageView) v.findViewById(R.id.cart_plus_img);
-                        plusButtons[counter].setOnClickListener(new MenuFragment.plusListener(quantity));
+                        minusButtons[counter] = (ImageView)   productViews[counter].findViewById(R.id.minus_sign);
+                        minusButtons[counter].setOnClickListener(new MenuFragment.minusListener(qnty[counter]));
 
-                        l.addView(v);
+                        plusButtons[counter] = (ImageView)   productViews[counter].findViewById(R.id.plus_sign);
+                        plusButtons[counter].setOnClickListener(new MenuFragment.plusListener(qnty[counter]));
+
+                        l.addView(productViews[counter]);
                         counter++;
                     }
 
 
-
                     LayoutInflater inflator= getActivity().getLayoutInflater();
                     View v=inflator.inflate(R.layout.proceed_button,null);
+                    v.findViewById(R.id.button3).setOnClickListener(new proceed_listener(listOfAllProducts,productViews));
                     l.addView(v);
 
 
@@ -148,6 +151,32 @@ public class MenuFragment extends Fragment {
             Integer qnty_int = Integer.parseInt(qnty.getText().toString());
             qnty_int += 1;
             qnty.setText(qnty_int.toString());
+        }
+
+    };
+
+    public class proceed_listener implements View.OnClickListener
+    {
+
+        View[] allViews;
+        Product[] allProducts;
+
+        public proceed_listener(Product[] allProductsIn,View[] allViewsIn) {
+            this.allViews = allViewsIn;
+            this.allProducts = allProductsIn;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            int size = allViews.length;
+
+            for(int i = 0; i < size; i++) {
+                String temp = allProducts[i].getName();
+                TextView quantity = (TextView) allViews[i].findViewById(R.id.cart_product_quantity_tv);
+
+                Log.e("Produto " + i + " :", temp + " - " + quantity.getText().toString());
+            }
         }
 
     };

@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity  {
 
         boolean finish = getIntent().getBooleanExtra("finishLogin", false);
         if (finish) {
-            startActivity(new Intent(this, MenuActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            startActivity(new Intent(this, MenuFragment.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
             finish();
             return;

@@ -25,7 +25,6 @@
         </activity>
         <activity android:name=".Teste" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MenuActivity" />
 
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
