@@ -1,11 +1,14 @@
 package com.example.filipedgb.cmovproj1;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.system.ErrnoException;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +40,9 @@ public class AccountTest extends AppCompatActivity
 
         app= FirebaseApp.getInstance();
         auth= FirebaseAuth.getInstance(app);
+
+
+
 
         boolean finish = getIntent().getBooleanExtra("finishMain", false);
         if (finish) {
@@ -77,6 +84,22 @@ public class AccountTest extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.account_test, menu);
+        try {
+            if(auth.getCurrentUser()!=null)
+            ((TextView) this.findViewById(R.id.mail_sidebar)).setText(auth.getCurrentUser().getEmail());
+        }
+        catch (Error e)
+        {
+            //error handling code
+        }
+
+
+
+        SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+        String code = sharedPref.getString("code","0000");
+        Log.e("codigo",code);
+
+
         return true;
     }
 

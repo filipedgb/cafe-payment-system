@@ -20,7 +20,7 @@ public class CodeScreen extends AppCompatActivity {
         ((TextView)this.findViewById(R.id.text_alert_code)).setText("Por motivos de segurança, irá ser pedido um código a cada compra.\n\nO seu código é:");
         boolean finish = getIntent().getBooleanExtra("finishCode", false);
         if (finish) {
-            Intent i=new Intent(this, MenuFragment.class);
+            Intent i=new Intent(this, AccountTest.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
@@ -32,7 +32,7 @@ public class CodeScreen extends AppCompatActivity {
 
     public void codeAccept(View view) {
         //teste
-        Intent intent = new Intent(getApplicationContext(), MenuFragment.class);
+        Intent intent = new Intent(getApplicationContext(), CodeScreen.class);
         intent.putExtra("finishCode", true);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
         startActivity(intent);
