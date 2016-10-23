@@ -4,7 +4,6 @@
     android:layout_height="match_parent">
 
 
-
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -66,15 +65,6 @@
                 android:textSize="12dip"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/plist_weight_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:paddingRight="25dip"
-                android:text="100 gm"
-                android:textColor="#343434"
-                android:textSize="12dip" />
 
             <ImageView
                 android:id="@+id/cart_minus_img"
@@ -100,7 +90,6 @@
                 android:src="@mipmap/ic_launcher" />
         </LinearLayout>
     </RelativeLayout>
-
 
 
 </LinearLayout>

@@ -43,11 +43,6 @@
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
-    <Button
-        android:text="Log out"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_logout"
-        android:onClick="logOut" />
+
 
 </android.support.design.widget.CoordinatorLayout>

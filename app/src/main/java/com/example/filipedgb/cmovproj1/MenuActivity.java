@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -43,12 +44,6 @@ public class MenuActivity extends AppCompatActivity {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mPostReference = database.getReference("products");
 
-        boolean finish = getIntent().getBooleanExtra("finish", false);
-        if (finish) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-        }
 
 
         ValueEventListener postListener = new ValueEventListener() {
@@ -58,34 +53,44 @@ public class MenuActivity extends AppCompatActivity {
                 LinearLayout l=(LinearLayout) findViewById(R.id.lineralayoutmenu);
                 l.removeAllViews();
 
+                int counter = 0;
+
+
+                int numberProducts = (int) dataSnapshot.getChildrenCount();
+
+                ImageView[] minusButtons = new ImageView[numberProducts];
+                ImageView[] plusButtons = new ImageView[numberProducts];
+                TextView[] qnty = new TextView[numberProducts];
+
                 for (DataSnapshot child: dataSnapshot.getChildren()) {
+
                     Product product = child.getValue(Product.class);
                     Log.e("c",product.getName());
                     LayoutInflater inflator= getLayoutInflater();
                     View v=inflator.inflate(R.layout.content_product,null);
+
                     TextView name= (TextView)v.findViewById(R.id.from_name);
                     TextView price= (TextView)v.findViewById(R.id.plist_price_text);
+                    TextView quantity= (TextView)v.findViewById(R.id.cart_product_quantity_tv);
+
                     name.setText(product.getName());
                     price.setText(product.getPrice().toString() + " €");
 
-                    ImageView plus = (ImageView) v.findViewById(R.id.cart_minus_img);
-                    plus.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v1) {
-                            TextView qnty = (TextView) v1.findViewById(R.id.cart_product_quantity_tv);
-                            Integer qnty_int = Integer.parseInt(qnty.getText().toString());
-                            Log.e("Numero",qnty_int.toString());
-                            qnty_int += 1;
-                            Log.e("novo numero",qnty_int.toString());
+                    minusButtons[counter] = (ImageView) v.findViewById(R.id.cart_minus_img);
+                    minusButtons[counter].setOnClickListener(new minusListener(quantity));
 
-                            qnty.setText(qnty_int.toString());
-                            //v.getId() will give you the image id
-                        }
-                    });
+                    plusButtons[counter] = (ImageView) v.findViewById(R.id.cart_plus_img);
+                    plusButtons[counter].setOnClickListener(new plusListener(quantity));
 
                     l.addView(v);
-                   // RelativeLayout content= (RelativeLayout) findViewById(R.id.productcontent);
-
+                    counter++;
                 }
+
+
+
+                LayoutInflater inflator= getLayoutInflater();
+                View v=inflator.inflate(R.layout.proceed_button,null);
+                l.addView(v);
 
 
             }
@@ -105,15 +110,42 @@ public class MenuActivity extends AppCompatActivity {
 
     }
 
-    public void logOut(View view) {
 
-        auth.signOut();
+    public class minusListener implements View.OnClickListener
+    {
 
+        TextView qnty;
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra("finish", true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-        startActivity(intent);
-        finish();
-    }
+        public minusListener(TextView qntyIn) {
+            this.qnty = qntyIn;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            Integer qnty_int = Integer.parseInt(qnty.getText().toString());
+            if(qnty_int > 0) qnty_int -= 1;
+            qnty.setText(qnty_int.toString());
+        }
+
+    };
+
+    public class plusListener implements View.OnClickListener
+    {
+
+        TextView qnty;
+
+        public plusListener(TextView qntyIn) {
+            this.qnty = qntyIn;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            Integer qnty_int = Integer.parseInt(qnty.getText().toString());
+            qnty_int += 1;
+            qnty.setText(qnty_int.toString());
+        }
+
+    };
 }
