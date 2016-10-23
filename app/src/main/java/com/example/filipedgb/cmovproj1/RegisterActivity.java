@@ -3,6 +3,7 @@ package com.example.filipedgb.cmovproj1;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -142,6 +143,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         Log.e("code",code);
 
+        SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("code",code);
+        editor.commit();
 
 
 
@@ -152,10 +157,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                 //checking if success
                 if(task.isSuccessful()){
+
+
                     Log.e("teste",auth.getCurrentUser().getUid()+"");
                     User user= new User(name,cardNumber,code,username);
 
                     dbRef.child("user_meta").child(auth.getCurrentUser().getUid()).setValue(user);
+
                     Log.e("register","successful");
 
 
