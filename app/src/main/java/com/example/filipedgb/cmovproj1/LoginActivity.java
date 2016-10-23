@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity  {
 //        Log.e("user",auth.getCurrentUser().getEmail());
         if(auth.getCurrentUser()!=null)
         {
-            startActivity(new Intent(this, MenuActivity.class));
+            startActivity(new Intent(this, AccountTest.class));
             finish();
             return;
         }
@@ -69,6 +69,8 @@ public class LoginActivity extends AppCompatActivity  {
     public void login(View view) {
         String email_txt = email.getText().toString();
         String password_txt = password.getText().toString();
+        if(email_txt.length()==0 || password_txt.length()==0)
+            return;
 
         auth.signInWithEmailAndPassword(email_txt, password_txt).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override

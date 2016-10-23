@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_sidebar"
+            android:icon="@drawable/ic_restaurant"
+            android:title="Menu" />
+        <item
+            android:id="@+id/vouchers_sidebar"
+            android:icon="@drawable/ic_credit_card"
+            android:title="Vouchers" />
+    </group>
+
+    <item android:title="Defenições">
+        <menu>
+            <item
+                android:id="@+id/account_sidebar"
+                android:icon="@drawable/ic_account_circle"
+                android:title="Conta" />
+            <item
+                android:id="@+id/logout_sidebar"
+                android:title="Desconectar-se" />
+        </menu>
+    </item>
+
+</menu>
