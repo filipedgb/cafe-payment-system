@@ -13,11 +13,20 @@ import java.util.*;
 public class Product {
     public String name = "";
     public Double price = 0.0;
+    public String id = null ;
 
     public Map<String, Double> products = new HashMap<>();
 
     public Product() {
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

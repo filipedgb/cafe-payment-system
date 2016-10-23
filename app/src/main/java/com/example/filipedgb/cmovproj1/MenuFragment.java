@@ -55,8 +55,6 @@ public class MenuFragment extends Fragment {
                     l.removeAllViews();
 
                     int counter = 0;
-
-
                     int numberProducts = (int) dataSnapshot.getChildrenCount();
 
                     View[]productViews = new View[numberProducts];
@@ -68,6 +66,8 @@ public class MenuFragment extends Fragment {
                     for (DataSnapshot child: dataSnapshot.getChildren()) {
 
                         listOfAllProducts[counter] = child.getValue(Product.class);
+                        listOfAllProducts[counter].setId(child.getKey().toString());
+
                         Log.e("c",  listOfAllProducts[counter].getName());
                         LayoutInflater inflator= getActivity().getLayoutInflater();
                         productViews[counter]=inflator.inflate(R.layout.content_product,null);
@@ -166,18 +166,53 @@ public class MenuFragment extends Fragment {
             this.allProducts = allProductsIn;
         }
 
+        public void saveToFirebase(Order order) {
+            app = FirebaseApp.getInstance();
+            auth = FirebaseAuth.getInstance(app);
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mOrderReference = database.getReference("orders");
+            String key = mOrderReference.push().getKey();
+            order.setOrder_id(key);
+            mOrderReference.child(key).setValue(order);
+
+            //Log.e("Key",key);
+        }
+
+        public void saveToFirebaseByUser(Order order) {
+            app = FirebaseApp.getInstance();
+            auth = FirebaseAuth.getInstance(app);
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference mOrderReference = database.getReference("orders_by_user");
+            mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(order.getOrder_id());
+
+
+            //Log.e("Key",key);
+        }
+
+
         @Override
         public void onClick(View v)
         {
             int size = allViews.length;
 
+            Order new_order = new Order(auth.getCurrentUser().getUid().toString());
+
             for(int i = 0; i < size; i++) {
                 String temp = allProducts[i].getName();
                 TextView quantity = (TextView) allViews[i].findViewById(R.id.cart_product_quantity_tv);
-
                 Log.e("Produto " + i + " :", temp + " - " + quantity.getText().toString());
+                if(Integer.parseInt(quantity.getText().toString()) > 0) {
+                    new_order.addProductToOrder(allProducts[i], Integer.parseInt(quantity.getText().toString()));
+                }
             }
+
+            saveToFirebase(new_order);
+            saveToFirebaseByUser(new_order);
         }
+
+
 
     };
 
