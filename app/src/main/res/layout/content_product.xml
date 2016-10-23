@@ -26,7 +26,7 @@
                 android:id="@+id/list_image"
                 android:layout_width="50dip"
                 android:layout_height="50dip"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/star"
                 android:background="@android:color/transparent" />
         </LinearLayout>
 
@@ -72,7 +72,8 @@
                 android:id="@+id/minus_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/minus_sign" />
+                android:layout_margin="5dp"
+                android:src="@mipmap/minus" />
 
             <TextView
                 android:id="@+id/cart_product_quantity_tv"
@@ -89,7 +90,8 @@
                 android:id="@+id/plus_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/plus_sign" />
+                android:layout_margin="5dp"
+                android:src="@mipmap/plus" />
         </LinearLayout>
     </RelativeLayout>
 
