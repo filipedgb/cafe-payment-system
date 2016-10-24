@@ -13,7 +13,13 @@ public class Voucher {
     private boolean used;
 
 
-    Voucher() {
+    public Voucher() {
+        used = false;
+    }
+
+    public Voucher(String user_id_in,int type_in) {
+        this.user_id = user_id_in;
+        this.type = type_in;
         used = false;
     }
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.filipedgb.cmovproj1.classes.User;
+import com.example.filipedgb.cmovproj1.classes.Voucher;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -111,13 +112,10 @@ public class MenuFragment extends Fragment {
                     Log.e("loadPost:onCancelled", databaseError.toException().toString());
                 }
             };
-            mPostReference.addListenerForSingleValueEvent(postListener);
 
+            mPostReference.addListenerForSingleValueEvent(postListener);
             return rootView;
         }
-
-
-
 
     public class minusListener implements View.OnClickListener
     {
@@ -168,6 +166,18 @@ public class MenuFragment extends Fragment {
             this.allProducts = allProductsIn;
         }
 
+        public void checkNewVouchers(Order order) {
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            final DatabaseReference ref = database.getReference("vouchers");
+
+            if(order.getOrder_price() > 20) {
+                Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),1);
+                String key = ref.push().getKey();
+                order.setOrder_id(key);
+                ref.child(key).setValue(voucher);
+            }
+        }
+
 
         public void updateTotalMoneySpent(final Order order) {
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -177,7 +187,22 @@ public class MenuFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
-                            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).child("moneySpent").setValue(user.getMoneySpent()+order.getOrder_price());
+                            Double old_money = user.getMoneySpent();
+                            Double new_money = user.getMoneySpent()+order.getOrder_price();
+
+                            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).child("moneySpent").setValue(new_money);
+
+                                     /* Check if user's spent money is a multiple of 100 for vouchers */
+                            if( ((int)((old_money%1000)/100)) !=  ((int) ((new_money%1000)/100)) ) { // donwload dos codigos comparar o numero das centenas
+
+                                final DatabaseReference ref = database.getReference("vouchers");
+                                Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),2);
+                                String key = ref.push().getKey();
+                                order.setOrder_id(key);
+                                ref.child(key).setValue(voucher);
+
+                            }
+
                         }
 
                         @Override
@@ -240,6 +265,7 @@ public class MenuFragment extends Fragment {
             saveToFirebase(new_order);
             saveToFirebaseByUser(new_order);
             updateTotalMoneySpent(new_order);
+            checkNewVouchers(new_order);
         }
 
 

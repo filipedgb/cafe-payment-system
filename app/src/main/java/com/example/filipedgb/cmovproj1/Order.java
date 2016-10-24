@@ -15,18 +15,13 @@ public class Order {
     private FirebaseAuth auth;
     private String order_id;
     private Double order_price;
-
-    public String getUser_code() {
-        return user_code;
-    }
-
-    public void setUser_code(String user_code) {
-        this.user_code = user_code;
-    }
-
     private String user_code;
     private HashMap<String, Integer> listOfProducts;
     private Boolean order_paid;
+
+    public Order() {
+
+    }
 
     public Order(String user_code_input) {
         order_paid = false;
@@ -74,7 +69,13 @@ public class Order {
         this.order_price = order_price;
     }
 
+    public String getUser_code() {
+        return user_code;
+    }
 
+    public void setUser_code(String user_code) {
+        this.user_code = user_code;
+    }
 
 }
 
