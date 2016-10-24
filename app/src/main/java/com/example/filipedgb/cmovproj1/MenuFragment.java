@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
+import com.google.android.gms.drive.realtime.internal.event.ObjectChangedDetails;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +25,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -261,11 +268,37 @@ public class MenuFragment extends Fragment {
                 }
             }
 
-            new_order.setOrder_price(count_price);
+           new_order.setOrder_price(count_price);
             saveToFirebase(new_order);
             saveToFirebaseByUser(new_order);
             updateTotalMoneySpent(new_order);
-            checkNewVouchers(new_order);
+           // checkNewVouchers(new_order);
+           // Log.e("firebase","done");
+
+         /*  Intent qrGenerator= new Intent(getContext(), QRcodeGenerator.class);
+            qrGenerator.putExtra("orderObject",new_order);
+            getActivity().startActivity(qrGenerator);
+            getActivity().finish();*/
+
+
+            Gson gson= new Gson();
+            Map<String,Object> jsonMap= new HashMap<String,Object>();
+            jsonMap.put("user",new_order.getUser_code());
+
+            jsonMap.put("products",new_order.getListOfProducts());
+
+            String teste= gson.toJsonTree(jsonMap).toString();
+
+            Log.e("teste","teste");
+
+            Log.e("string",teste);
+            FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
+            Fragment fragment = QRFragment.newInstance(new_order);
+           fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
+
+
+
+
         }
 
 

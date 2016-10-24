@@ -4,13 +4,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by Filipe Batista on 23/10/2016.
  */
 
-public class Order {
+public class Order implements Serializable {
     private FirebaseApp app;
     private FirebaseAuth auth;
     private String order_id;

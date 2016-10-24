@@ -52,6 +52,8 @@ public class LoginActivity extends AppCompatActivity  {
 //        Log.e("user",auth.getCurrentUser().getEmail());
         if(auth.getCurrentUser()!=null)
         {
+           // startActivity(new Intent(LoginActivity.this, QRcodeGenerator.class));
+
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference userReference = database.getReference();
@@ -84,6 +86,7 @@ public class LoginActivity extends AppCompatActivity  {
                     }
             );
 
+
         }
         email=(EditText)findViewById(R.id.email_login);
         password=(EditText)findViewById(R.id.password_login);
@@ -93,7 +96,7 @@ public class LoginActivity extends AppCompatActivity  {
         boolean finish = getIntent().getBooleanExtra("finishLogin", false);
         if (finish) {
 
-            startActivity(new Intent(this, MenuFragment.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            startActivity(new Intent(this, AccountTest.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             finish();
             return;
         }
