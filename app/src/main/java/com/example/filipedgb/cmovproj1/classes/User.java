@@ -11,12 +11,26 @@ public class User {
     private String cardNumber;
     private String code;
     private String username;
+    private boolean admin;
+
+    public User() {
+
+    }
 
     public User(String name, String cardNumber, String code, String username) {
+        this.admin = false;
         this.name = name;
         this.cardNumber = cardNumber;
         this.code = code;
         this.username=username;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public String getUid() {

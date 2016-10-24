@@ -6,16 +6,21 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.filipedgb.cmovproj1.classes.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.auth.AuthResult;
 
@@ -47,9 +52,38 @@ public class LoginActivity extends AppCompatActivity  {
 //        Log.e("user",auth.getCurrentUser().getEmail());
         if(auth.getCurrentUser()!=null)
         {
-            startActivity(new Intent(this, AccountTest.class));
-            finish();
-            return;
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference userReference = database.getReference();
+            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            User user = dataSnapshot.getValue(User.class);
+
+                            if(user.isAdmin()) {
+                                Log.e("Login access","ADMINISTRATOR");
+                                startActivity(new Intent(LoginActivity.this, AccountTest.class));
+                                // AQUI SUPOSTAMENTE MUDARA PARA OUTRA ACTIVITY
+
+                            } else {
+                                Log.e("Login access","NORMAL");
+                                startActivity(new Intent(LoginActivity.this, AccountTest.class));
+                            }
+
+                            //finish();
+                            //return;
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
+
         }
         email=(EditText)findViewById(R.id.email_login);
         password=(EditText)findViewById(R.id.password_login);
@@ -58,8 +92,8 @@ public class LoginActivity extends AppCompatActivity  {
 
         boolean finish = getIntent().getBooleanExtra("finishLogin", false);
         if (finish) {
-            startActivity(new Intent(this, MenuFragment.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
+            startActivity(new Intent(this, MenuFragment.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             finish();
             return;
         }
