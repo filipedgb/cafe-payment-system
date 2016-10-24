@@ -2,6 +2,7 @@ package com.example.filipedgb.cmovproj1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity  {
 //        Log.e("user",auth.getCurrentUser().getEmail());
         if(auth.getCurrentUser()!=null)
         {
-           // startActivity(new Intent(LoginActivity.this, QRcodeGenerator.class));
+           // startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
 
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -64,9 +65,15 @@ public class LoginActivity extends AppCompatActivity  {
 
                             User user = dataSnapshot.getValue(User.class);
 
+                            SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString("code",user.getCode());
+                            editor.commit();
+
+
                             if(user.isAdmin()) {
                                 Log.e("Login access","ADMINISTRATOR");
-                                startActivity(new Intent(LoginActivity.this, AccountTest.class));
+                                startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
                                 // AQUI SUPOSTAMENTE MUDARA PARA OUTRA ACTIVITY
 
                             } else {

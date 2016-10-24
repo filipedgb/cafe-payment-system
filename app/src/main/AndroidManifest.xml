@@ -39,10 +39,7 @@
             android:name=".AccountTest"
             android:label="@string/title_activity_account_test"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".QRcodeGenerator"
-            android:label="@string/title_activity_qrcode_generator"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".QRcodeReader"></activity>
     </application>
 
 </manifest>
