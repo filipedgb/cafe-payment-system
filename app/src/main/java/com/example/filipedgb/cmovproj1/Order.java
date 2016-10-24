@@ -14,6 +14,7 @@ public class Order {
     private FirebaseApp app;
     private FirebaseAuth auth;
     private String order_id;
+    private Double order_price;
 
     public String getUser_code() {
         return user_code;
@@ -65,6 +66,13 @@ public class Order {
         this.order_paid = order_paid;
     }
 
+    public Double getOrder_price() {
+        return order_price;
+    }
+
+    public void setOrder_price(Double order_price) {
+        this.order_price = order_price;
+    }
 
 
 

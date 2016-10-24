@@ -143,6 +143,10 @@ public class AccountTest extends AppCompatActivity
             //content_account_test
             fragment= new MenuFragment();
         }
+        else if(id==R.id.vouchers_sidebar)
+        {
+            fragment = new VouchersFragment();
+        }
 
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();

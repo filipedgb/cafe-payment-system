@@ -1,6 +1,7 @@
 package com.example.filipedgb.cmovproj1;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.filipedgb.cmovproj1.classes.User;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -166,6 +168,26 @@ public class MenuFragment extends Fragment {
             this.allProducts = allProductsIn;
         }
 
+
+        public void updateTotalMoneySpent(final Order order) {
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            final DatabaseReference userReference = database.getReference();
+            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).child("moneySpent").setValue(user.getMoneySpent()+order.getOrder_price());
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    }
+            );
+        }
+
+
         public void saveToFirebase(Order order) {
             app = FirebaseApp.getInstance();
             auth = FirebaseAuth.getInstance(app);
@@ -178,6 +200,7 @@ public class MenuFragment extends Fragment {
 
             //Log.e("Key",key);
         }
+
 
         public void saveToFirebaseByUser(Order order) {
             app = FirebaseApp.getInstance();
@@ -196,20 +219,27 @@ public class MenuFragment extends Fragment {
         public void onClick(View v)
         {
             int size = allViews.length;
+            Double count_price = 0.0;
 
             Order new_order = new Order(auth.getCurrentUser().getUid().toString());
 
             for(int i = 0; i < size; i++) {
                 String temp = allProducts[i].getName();
                 TextView quantity = (TextView) allViews[i].findViewById(R.id.cart_product_quantity_tv);
-                Log.e("Produto " + i + " :", temp + " - " + quantity.getText().toString());
+                Integer quantity_int = Integer.parseInt(quantity.getText().toString());
+                //Log.e("Produto " + i + " :", temp + " - " + quantity.getText().toString() + "*" + allProducts[i].getPrice());
+
+                count_price += (double) quantity_int*allProducts[i].getPrice();
+                Log.e("Price",Double.toString(count_price));
                 if(Integer.parseInt(quantity.getText().toString()) > 0) {
-                    new_order.addProductToOrder(allProducts[i], Integer.parseInt(quantity.getText().toString()));
+                    new_order.addProductToOrder(allProducts[i], quantity_int);
                 }
             }
 
+            new_order.setOrder_price(count_price);
             saveToFirebase(new_order);
             saveToFirebaseByUser(new_order);
+            updateTotalMoneySpent(new_order);
         }
 
 

@@ -12,6 +12,8 @@ public class User {
     private String code;
     private String username;
     private boolean admin;
+    private Double moneySpent;
+
 
     public User() {
 
@@ -23,6 +25,7 @@ public class User {
         this.cardNumber = cardNumber;
         this.code = code;
         this.username=username;
+        this.moneySpent = 0.0;
     }
 
     public boolean isAdmin() {
@@ -69,4 +72,13 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+    public Double getMoneySpent() {
+        return moneySpent;
+    }
+
+    public void setMoneySpent(Double moneySpent) {
+        this.moneySpent = moneySpent;
+    }
+
 }

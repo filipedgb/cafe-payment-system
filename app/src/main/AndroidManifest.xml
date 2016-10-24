@@ -38,10 +38,6 @@
         <activity
             android:name=".AccountTest"
             android:label="@string/title_activity_account_test"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".TerminalOrders"
-            android:label="@string/title_activity_terminal_orders"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
