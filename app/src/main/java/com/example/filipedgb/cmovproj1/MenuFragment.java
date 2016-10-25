@@ -269,10 +269,14 @@ public class MenuFragment extends Fragment {
             }
 
            new_order.setOrder_price(count_price);
+
+
+
+
             saveToFirebase(new_order);
             saveToFirebaseByUser(new_order);
             updateTotalMoneySpent(new_order);
-           // checkNewVouchers(new_order);
+            checkNewVouchers(new_order);
            // Log.e("firebase","done");
 
          /*  Intent qrGenerator= new Intent(getContext(), QRcodeGenerator.class);

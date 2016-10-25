@@ -12,9 +12,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.devmarvel.creditcardentry.library.CreditCardForm;
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -70,6 +73,10 @@ public class RegisterActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance(app);
         dbRef=FirebaseDatabase.getInstance().getReference();
 
+
+
+
+
         String c= getIntent().getStringExtra("code");
 
         boolean finish = getIntent().getBooleanExtra("finishRegister", false);
@@ -99,9 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
         email = ((EditText)findViewById(R.id.email_register)).getText().toString();
         username = ((EditText)findViewById(R.id.username_register)).getText().toString();
         password = ((EditText)findViewById(R.id.password_register)).getText().toString();
-        cardNumber =((EditText) findViewById(R.id.card_register)).getText().toString();
-
-
+        cardNumber =((CreditCardForm) findViewById(R.id.form_no_zip)).getCreditCard().getCardNumber().toString();
 
 
 
@@ -124,7 +129,7 @@ public class RegisterActivity extends AppCompatActivity {
             error = true;
         }
         if (cardNumber == "") {
-            ((TextView) findViewById(R.id.card_register)).setError("Preencha este campo");
+            //((TextView) findViewById(R.id.card_register)).setError("Preencha este campo");
             error = true;
         }
 
@@ -142,6 +147,7 @@ public class RegisterActivity extends AppCompatActivity {
         n=rand.nextInt(9); code+=n;
 
         Log.e("code",code);
+
 
         SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -184,6 +190,8 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
 }

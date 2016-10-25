@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity  {
 
                             if(user.isAdmin()) {
                                 Log.e("Login access","ADMINISTRATOR");
-                                startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
+                                startActivity(new Intent(LoginActivity.this, AccountTest.class));
                                 // AQUI SUPOSTAMENTE MUDARA PARA OUTRA ACTIVITY
 
                             } else {
