@@ -54,8 +54,8 @@ public class VouchersFragment extends Fragment {
                 int numberOfVouchers = (int) dataSnapshot.getChildrenCount();
                 int counter = 0;
 
-                final View[] vouchersViews = new View[numberOfVouchers];
-                final Voucher[] listOfAllVouchers = new Voucher[numberOfVouchers];
+               // final View[] vouchersViews = new View[numberOfVouchers];
+               // final Voucher[] listOfAllVouchers = new Voucher[numberOfVouchers];
 
                 for (final DataSnapshot child: dataSnapshot.getChildren()) {
 
@@ -63,44 +63,24 @@ public class VouchersFragment extends Fragment {
                     Log.e("dataref",vaucherUserRef.getKey().toString());
 
                     DatabaseReference vaucherRef = database.getReference("vouchers");
-
-                    final int counter2 = counter;
+                    LayoutInflater inflator = getActivity().getLayoutInflater();
+                    final View voucherView = inflator.inflate(R.layout.content_voucher,null);
 
                     vaucherRef.child(vaucherUserRef.getKey().toString()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            listOfAllVouchers[counter2] = snapshot.getValue(Voucher.class);
-                            LayoutInflater inflator= getActivity().getLayoutInflater();
 
-                            vouchersViews[counter2]= inflator.inflate(R.layout.content_voucher,null);
-
-                            TextView name= (TextView) vouchersViews[counter2].findViewById(R.id.voucher_text);
-                            if(listOfAllVouchers[counter2].getType() == 1) name.setText("VOUCHER PIPOCAS GRATIS");
-                            else if(listOfAllVouchers[counter2].getType() == 2)  name.setText("DESCONTO 5 %");
-                            l.addView(vouchersViews[counter2]);
-
-
+                            Voucher voucherObj = snapshot.getValue(Voucher.class);
+                            TextView name= (TextView) voucherView.findViewById(R.id.voucher_text);
+                            if(voucherObj.getType() == 1) name.setText("VOUCHER PIPOCAS GRATIS");
+                            else if(voucherObj.getType() == 2)  name.setText("DESCONTO 5 %");
                         }
-
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
+                        public void onCancelled(DatabaseError databaseError) { }
 
                     });
-
-                    counter=counter++;
-
-
-                   /* listOfAllVouchers[counter] = child.getValue(Voucher.class);
-                    LayoutInflater inflator= getActivity().getLayoutInflater();
-
-                    vouchersViews[counter]= inflator.inflate(R.layout.content_voucher,null);
-
-                    TextView name= (TextView) vouchersViews[counter].findViewById(R.id.voucher_text);
-
-                    /* mudar esta porcaria */
-                  /*  */
+                    l.addView(voucherView);
+                    
                 }
 
 
