@@ -43,23 +43,56 @@ public class VouchersFragment extends Fragment {
 
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference mPostReference = database.getReference("vouchers");
+        DatabaseReference mPostReference = database.getReference("vouchers_by_user").child(auth.getCurrentUser().getUid());
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                LinearLayout l=(LinearLayout)  getView().findViewById(R.id.content_vouchers);
+                final LinearLayout l=(LinearLayout)  getView().findViewById(R.id.content_vouchers);
                 l.removeAllViews();
 
                 int numberOfVouchers = (int) dataSnapshot.getChildrenCount();
                 int counter = 0;
 
-                View[] vouchersViews = new View[numberOfVouchers];
-                Voucher[] listOfAllVouchers = new Voucher[numberOfVouchers];
+                final View[] vouchersViews = new View[numberOfVouchers];
+                final Voucher[] listOfAllVouchers = new Voucher[numberOfVouchers];
 
-                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                for (final DataSnapshot child: dataSnapshot.getChildren()) {
 
-                    listOfAllVouchers[counter] = child.getValue(Voucher.class);
+                    DatabaseReference vaucherUserRef = database.getReference("vouchers_by_user").child(child.getValue(String.class));
+                    Log.e("dataref",vaucherUserRef.getKey().toString());
+
+                    DatabaseReference vaucherRef = database.getReference("vouchers");
+
+                    final int counter2 = counter;
+
+                    vaucherRef.child(vaucherUserRef.getKey().toString()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            listOfAllVouchers[counter2] = snapshot.getValue(Voucher.class);
+                            LayoutInflater inflator= getActivity().getLayoutInflater();
+
+                            vouchersViews[counter2]= inflator.inflate(R.layout.content_voucher,null);
+
+                            TextView name= (TextView) vouchersViews[counter2].findViewById(R.id.voucher_text);
+                            if(listOfAllVouchers[counter2].getType() == 1) name.setText("VOUCHER PIPOCAS GRATIS");
+                            else if(listOfAllVouchers[counter2].getType() == 2)  name.setText("DESCONTO 5 %");
+                            l.addView(vouchersViews[counter2]);
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+                    });
+
+                    counter=counter++;
+
+
+                   /* listOfAllVouchers[counter] = child.getValue(Voucher.class);
                     LayoutInflater inflator= getActivity().getLayoutInflater();
 
                     vouchersViews[counter]= inflator.inflate(R.layout.content_voucher,null);
@@ -67,10 +100,7 @@ public class VouchersFragment extends Fragment {
                     TextView name= (TextView) vouchersViews[counter].findViewById(R.id.voucher_text);
 
                     /* mudar esta porcaria */
-                    if(listOfAllVouchers[counter].getType() == 1) name.setText("VOUCHER PIPOCAS GRATIS");
-                    else if(listOfAllVouchers[counter].getType() == 2)  name.setText("DESCONTO 5 %");
-                    l.addView(vouchersViews[counter]);
-                    counter++;
+                  /*  */
                 }
 
 
