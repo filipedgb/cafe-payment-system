@@ -182,6 +182,9 @@ public class MenuFragment extends Fragment {
                 String key = ref.push().getKey();
                 order.setOrder_id(key);
                 ref.child(key).setValue(voucher);
+
+                DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
+                mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
             }
         }
 
@@ -207,6 +210,8 @@ public class MenuFragment extends Fragment {
                                 String key = ref.push().getKey();
                                 order.setOrder_id(key);
                                 ref.child(key).setValue(voucher);
+                                DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
+                                mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
 
                             }
 
