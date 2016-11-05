@@ -4,10 +4,89 @@
     android:layout_height="match_parent">
 
 
-    <TextView
-        android:id="@+id/voucher_text"
-        android:text="TextView"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        />
+        android:background="#fff"
+        android:orientation="horizontal"
+        android:id="@+id/productcontent"
+        android:layout_margin="4dp"
+
+        android:padding="10dp" >
+
+        <!-- ListRow Left sied Thumbnail image -->
+
+        <LinearLayout
+            android:id="@+id/thumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:padding="2dip" >
+
+            <ImageView
+                android:id="@+id/list_image"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:layout_margin="5dp"
+                android:src="@mipmap/coupon"
+                android:background="@android:color/transparent" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/voucher_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:text="Nome de Voucher"
+                        android:textColor="#040404"
+                        android:textSize="18sp"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginLeft="10dp"
+                        android:typeface="sans"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/voucher_used"
+                        android:text="Valido ou Usado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="14sp"
+                        android:layout_marginLeft="10dp"
+
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/OrangeRed"
+            android:id="@+id/voucher_used_band"
+            android:orientation="horizontal"
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/thumbnail"></LinearLayout>
+
+        <!-- Title Of Song -->
+
+
+    </RelativeLayout>
+
+
 </LinearLayout>

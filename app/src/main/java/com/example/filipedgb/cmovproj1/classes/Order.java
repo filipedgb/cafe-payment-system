@@ -1,5 +1,6 @@
-package com.example.filipedgb.cmovproj1;
+package com.example.filipedgb.cmovproj1.classes;
 
+import com.example.filipedgb.cmovproj1.Product;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 

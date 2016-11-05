@@ -1,12 +1,8 @@
-package com.example.filipedgb.cmovproj1;
+package com.example.filipedgb.cmovproj1.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.filipedgb.cmovproj1.Product;
+import com.example.filipedgb.cmovproj1.QRFragment;
+import com.example.filipedgb.cmovproj1.R;
+import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
-import com.google.android.gms.drive.realtime.internal.event.ObjectChangedDetails;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;

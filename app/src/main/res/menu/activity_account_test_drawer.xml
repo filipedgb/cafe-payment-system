@@ -10,6 +10,10 @@
             android:id="@+id/vouchers_sidebar"
             android:icon="@drawable/ic_credit_card"
             android:title="Vouchers" />
+        <item
+            android:id="@+id/history_sidebar"
+            android:icon="@drawable/ic_history"
+            android:title="Histórico" />
     </group>
 
     <item android:title="Defenições">

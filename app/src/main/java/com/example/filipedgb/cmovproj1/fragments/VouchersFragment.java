@@ -1,9 +1,11 @@
-package com.example.filipedgb.cmovproj1;
+package com.example.filipedgb.cmovproj1.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
 import com.google.firebase.FirebaseApp;
@@ -68,6 +71,11 @@ public class VouchersFragment extends Fragment {
                             TextView name= (TextView) voucherView.findViewById(R.id.voucher_text);
                             if(voucherObj.getType() == 1) name.setText("VOUCHER PIPOCAS GRATIS");
                             else if(voucherObj.getType() == 2)  name.setText("DESCONTO 5 %");
+                            TextView used= (TextView) voucherView.findViewById(R.id.voucher_used);
+                            LinearLayout used_band=(LinearLayout) voucherView.findViewById(R.id.voucher_used_band);
+
+                            if(voucherObj.isUsed())  {used.setText("Usado"); used_band.setBackgroundColor(Color.parseColor("#FF4500"));}
+                            else  {used.setText("Válido"); used_band.setBackgroundColor(Color.parseColor("#228B22"));}
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) { }

@@ -1,6 +1,5 @@
 package com.example.filipedgb.cmovproj1;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.system.ErrnoException;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,6 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.filipedgb.cmovproj1.fragments.HistoryFragment;
+import com.example.filipedgb.cmovproj1.fragments.MenuFragment;
+import com.example.filipedgb.cmovproj1.fragments.VouchersFragment;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -147,6 +148,11 @@ public class AccountTest extends AppCompatActivity
         else if(id==R.id.vouchers_sidebar)
         {
             fragment = new VouchersFragment();
+        }
+
+        else if(id==R.id.history_sidebar)
+        {
+            fragment = new HistoryFragment();
         }
 
         if (fragment != null) {

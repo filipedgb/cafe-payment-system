@@ -54,8 +54,10 @@ public class LoginActivity extends AppCompatActivity  {
         if(auth.getCurrentUser()!=null)
         {
            // startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
+            startActivity(new Intent(LoginActivity.this, AccountTest.class));
 
 
+/*
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference userReference = database.getReference();
             userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
@@ -92,6 +94,7 @@ public class LoginActivity extends AppCompatActivity  {
                         }
                     }
             );
+*/
 
 
         }
