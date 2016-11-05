@@ -51,12 +51,6 @@ public class VouchersFragment extends Fragment {
                 final LinearLayout l=(LinearLayout)  getView().findViewById(R.id.content_vouchers);
                 l.removeAllViews();
 
-                int numberOfVouchers = (int) dataSnapshot.getChildrenCount();
-                int counter = 0;
-
-               // final View[] vouchersViews = new View[numberOfVouchers];
-               // final Voucher[] listOfAllVouchers = new Voucher[numberOfVouchers];
-
                 for (final DataSnapshot child: dataSnapshot.getChildren()) {
 
                     DatabaseReference vaucherUserRef = database.getReference("vouchers_by_user").child(child.getValue(String.class));
@@ -77,21 +71,12 @@ public class VouchersFragment extends Fragment {
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) { }
-
                     });
                     l.addView(voucherView);
-                    
                 }
-
-
-
             }
-
-
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         };
 
