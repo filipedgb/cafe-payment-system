@@ -26,7 +26,7 @@
         <LinearLayout
             android:id="@+id/thumbnail"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
@@ -50,19 +50,19 @@
                         android:text="05/11/16"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView2"
+                        android:id="@+id/date_history"
                         android:textColor="@color/White"
                         android:textSize="10sp"
                         android:layout_marginRight="15dp"
-                        android:layout_below="@+id/textView3"
-                        android:layout_alignLeft="@+id/textView3"
-                        android:layout_alignStart="@+id/textView3" />
+                        android:layout_below="@+id/hours_history"
+                        android:layout_alignLeft="@+id/hours_history"
+                        android:layout_alignStart="@+id/hours_history" />
 
                     <TextView
                         android:text="18:43"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView3"
+                        android:id="@+id/hours_history"
                         android:textSize="12sp"
                         android:textColor="@color/White"
                         android:layout_marginTop="13dp"
@@ -95,6 +95,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="1">
 
                     <TextView
@@ -133,7 +134,7 @@
                         android:layout_below="@+id/linearlayoutproducts"
                         android:layout_alignLeft="@+id/voucher_text"
                         android:layout_alignStart="@+id/voucher_text"
-                        android:layout_marginTop="10dp" />
+                        android:layout_marginTop="10dp"/>
 
                 </RelativeLayout>
 

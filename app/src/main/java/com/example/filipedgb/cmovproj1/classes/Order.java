@@ -18,6 +18,16 @@ public class Order implements Serializable {
     private String order_id;
     private Double order_price;
     private String user_code;
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    private String created_at;
     private HashMap<String, Integer> listOfProducts;
     private Boolean order_paid;
 

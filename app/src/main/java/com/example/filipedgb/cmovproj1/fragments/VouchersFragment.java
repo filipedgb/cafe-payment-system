@@ -69,13 +69,24 @@ public class VouchersFragment extends Fragment {
 
                             Voucher voucherObj = snapshot.getValue(Voucher.class);
                             TextView name= (TextView) voucherView.findViewById(R.id.voucher_text);
-                            if(voucherObj.getType() == 1) name.setText("VOUCHER PIPOCAS GRATIS");
-                            else if(voucherObj.getType() == 2)  name.setText("DESCONTO 5 %");
+                            ImageView image= (ImageView) voucherView.findViewById(R.id.list_image);
+
+                            if(voucherObj.getType() == 1) {
+                                name.setText("VOUCHER PIPOCAS GRATIS");
+                                image.setImageResource(R.mipmap.popcorn);
+                            }
+                            else if(voucherObj.getType() == 2) {
+                                name.setText("DESCONTO 5 %");
+                                image.setImageResource(R.mipmap.coupon);
+
+                            }
                             TextView used= (TextView) voucherView.findViewById(R.id.voucher_used);
                             LinearLayout used_band=(LinearLayout) voucherView.findViewById(R.id.voucher_used_band);
 
+
+
                             if(voucherObj.isUsed())  {used.setText("Usado"); used_band.setBackgroundColor(Color.parseColor("#FF4500"));}
-                            else  {used.setText("Válido"); used_band.setBackgroundColor(Color.parseColor("#228B22"));}
+                            else  {used.setText("Válido"); used_band.setBackgroundColor(Color.parseColor("#2E8B57"));}
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) { }

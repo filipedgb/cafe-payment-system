@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
-import com.example.filipedgb.cmovproj1.classes.Voucher;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -20,9 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class HistoryFragment extends Fragment {
 
@@ -44,6 +40,10 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         app= FirebaseApp.getInstance();
         auth= FirebaseAuth.getInstance(app);
+
+
+
+
 
 
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
@@ -74,7 +74,18 @@ public class HistoryFragment extends Fragment {
 
                             final Order orderObj = snapshot.getValue(Order.class);
                             TextView price= (TextView) ordersView.findViewById(R.id.tv_price);
+                            TextView hours= (TextView) ordersView.findViewById(R.id.hours_history);
+                            TextView date= (TextView) ordersView.findViewById(R.id.date_history);
+
                             Double price_db=orderObj.getOrder_price();
+                            price.setText(round(price_db,2)+"€");
+
+                            hours.setText(orderObj.getCreated_at().substring(11));
+                            date.setText(orderObj.getCreated_at().substring(0,9));
+
+
+                            if(((LinearLayout) ordersView.findViewById(R.id.linearlayoutproducts)).getChildCount() > 0)
+                                ((LinearLayout) ordersView.findViewById(R.id.linearlayoutproducts)).removeAllViews();
 
                             if(orderObj.getListOfProducts()!=null)
                             {
@@ -89,7 +100,9 @@ public class HistoryFragment extends Fragment {
 
                                             TextView tv= new TextView(linearlayoutproducts.getContext());
                                             tv.setTextColor(Color.BLACK);
-                                            tv.setText(orderObj.getListOfProducts().get(key)+"  "+snapshot.child("name").getValue());
+                                            double total= Double.parseDouble( (snapshot.child("price").getValue().toString())) * Double.parseDouble( orderObj.getListOfProducts().get(key).toString());
+
+                                            tv.setText(orderObj.getListOfProducts().get(key)+"  "+snapshot.child("name").getValue()+"   "+ round(total,2));
 
                                             linearlayoutproducts.addView(tv);
 
@@ -109,7 +122,7 @@ public class HistoryFragment extends Fragment {
 
 
 
-                            price.setText(round(price_db,1)+"€");
+
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) { }

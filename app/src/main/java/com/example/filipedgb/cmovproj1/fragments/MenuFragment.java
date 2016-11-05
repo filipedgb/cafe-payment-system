@@ -26,6 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -275,8 +278,9 @@ public class MenuFragment extends Fragment {
            new_order.setOrder_price(count_price);
 
 
-
-
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            String date = df.format(Calendar.getInstance().getTime());
+            new_order.setCreated_at(date);
             saveToFirebase(new_order);
             saveToFirebaseByUser(new_order);
             updateTotalMoneySpent(new_order);

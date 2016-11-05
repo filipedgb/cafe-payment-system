@@ -11,35 +11,49 @@
         android:orientation="horizontal"
         android:id="@+id/productcontent"
         android:layout_margin="4dp"
-
-        android:padding="10dp" >
+ >
 
         <!-- ListRow Left sied Thumbnail image -->
-
-        <LinearLayout
-            android:id="@+id/thumbnail"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:padding="2dip" >
+            android:id="@+id/relayout_vouchers">
 
-            <ImageView
-                android:id="@+id/list_image"
-                android:layout_width="50dip"
-                android:layout_height="50dip"
-                android:layout_margin="5dp"
-                android:src="@mipmap/coupon"
-                android:background="@android:color/transparent" />
+
+            <LinearLayout
+                android:id="@+id/voucher_used_band"
+                android:orientation="horizontal"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_width="20dp"
+                android:layout_height="70dp"></LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toRightOf="@+id/voucher_used_band"
+                android:layout_toEndOf="@+id/voucher_used_band">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/list_image"
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:src="@mipmap/coupon"
+                        android:background="@android:color/transparent"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="10dp
+                        "/>
 
                     <TextView
                         android:id="@+id/voucher_text"
@@ -61,27 +75,16 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textSize="14sp"
-                        android:layout_marginLeft="10dp"
 
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_below="@+id/voucher_text"
+                        android:layout_alignLeft="@+id/voucher_text"
+                        android:layout_alignStart="@+id/voucher_text" />
                 </RelativeLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
-            android:background="@color/OrangeRed"
-            android:id="@+id/voucher_used_band"
-            android:orientation="horizontal"
-            android:layout_width="10dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@+id/thumbnail"></LinearLayout>
 
         <!-- Title Of Song -->
 
