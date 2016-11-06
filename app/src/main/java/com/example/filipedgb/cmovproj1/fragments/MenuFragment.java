@@ -56,6 +56,7 @@ public class MenuFragment extends Fragment {
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference mPostReference = database.getReference("products");
+            mPostReference.keepSynced(true);
 
 
 
@@ -178,6 +179,8 @@ public class MenuFragment extends Fragment {
         public void checkNewVouchers(Order order) {
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference ref = database.getReference("vouchers");
+            ref.keepSynced(true);
+
 
             if(order.getOrder_price() > 20) {
                 Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),1);
@@ -186,6 +189,8 @@ public class MenuFragment extends Fragment {
                 ref.child(key).setValue(voucher);
 
                 DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
+                mOrderReference.keepSynced(true);
+
                 mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
             }
         }
@@ -194,6 +199,8 @@ public class MenuFragment extends Fragment {
         public void updateTotalMoneySpent(final Order order) {
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             final DatabaseReference userReference = database.getReference();
+            userReference.keepSynced(true);
+
             userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
                     new ValueEventListener() {
                         @Override
@@ -233,6 +240,7 @@ public class MenuFragment extends Fragment {
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference mOrderReference = database.getReference("orders");
+            mOrderReference.keepSynced(true);
             String key = mOrderReference.push().getKey();
             order.setOrder_id(key);
             mOrderReference.child(key).setValue(order);
@@ -247,6 +255,8 @@ public class MenuFragment extends Fragment {
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference mOrderReference = database.getReference("orders_by_user");
+            mOrderReference.keepSynced(true);
+
             mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(order.getOrder_id());
 
 

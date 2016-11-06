@@ -52,6 +52,7 @@ public class HistoryFragment extends Fragment {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mPostReference = database.getReference("orders_by_user").child(auth.getCurrentUser().getUid());
+        mPostReference.keepSynced(true);
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -62,9 +63,11 @@ public class HistoryFragment extends Fragment {
                 for (final DataSnapshot child: dataSnapshot.getChildren()) {
 
                     DatabaseReference ordersUserRef = database.getReference("orders_by_user").child(child.getValue(String.class));
+                    ordersUserRef.keepSynced(true);
                     Log.e("dataref",ordersUserRef.getKey().toString());
 
                     DatabaseReference vaucherRef = database.getReference("orders");
+                    ordersUserRef.keepSynced(true);
                     LayoutInflater inflator = getActivity().getLayoutInflater();
                     final View ordersView = inflator.inflate(R.layout.content_order_history,null);
 
@@ -92,6 +95,8 @@ public class HistoryFragment extends Fragment {
                                 for (final String key : orderObj.getListOfProducts().keySet())
                                 {
                                     DatabaseReference productRef = database.getReference("products");
+                                    productRef.keepSynced(true);
+
                                     productRef.child(key).addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot snapshot) {

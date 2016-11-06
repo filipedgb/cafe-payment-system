@@ -47,6 +47,10 @@ public class VouchersFragment extends Fragment {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mPostReference = database.getReference("vouchers_by_user").child(auth.getCurrentUser().getUid());
+        mPostReference.keepSynced(true);
+        database.getReference("vouchers").keepSynced(true);
+
+
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -57,9 +61,13 @@ public class VouchersFragment extends Fragment {
                 for (final DataSnapshot child: dataSnapshot.getChildren()) {
 
                     DatabaseReference vaucherUserRef = database.getReference("vouchers_by_user").child(child.getValue(String.class));
+                    vaucherUserRef.keepSynced(true);
+
                     Log.e("dataref",vaucherUserRef.getKey().toString());
 
                     DatabaseReference vaucherRef = database.getReference("vouchers");
+                    vaucherRef.keepSynced(true);
+
                     LayoutInflater inflator = getActivity().getLayoutInflater();
                     final View voucherView = inflator.inflate(R.layout.content_voucher,null);
 

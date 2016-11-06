@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_autenticacao);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         app= FirebaseApp.getInstance();
         auth=FirebaseAuth.getInstance(app);
