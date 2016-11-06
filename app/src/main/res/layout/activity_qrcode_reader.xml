@@ -39,8 +39,8 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:gravity="center"
-        android:onClick="scanBar"
-        android:text="Bar Code"
+        android:onClick="logout"
+        android:text="Sair"
         android:textSize="18sp" >
     </Button>
 

@@ -40,65 +40,49 @@ public class LoginActivity extends AppCompatActivity  {
     private FirebaseStorage storageUsers;
     private DatabaseReference dbRef;
 
+    static boolean calledAlready = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_autenticacao);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        if (!calledAlready)
+        {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            calledAlready = true;
+        }
+
 
         app= FirebaseApp.getInstance();
         auth=FirebaseAuth.getInstance(app);
         database= FirebaseDatabase.getInstance(app);
 //        Log.e("user",auth.getCurrentUser().getEmail());
-        if(auth.getCurrentUser()!=null)
-        {
-           // startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
-            startActivity(new Intent(LoginActivity.this, AccountTest.class));
+        if(auth.getCurrentUser()!=null) {
+            // startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
 
-
-/*
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference userReference = database.getReference();
-            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            User user = dataSnapshot.getValue(User.class);
-
-                            SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putString("code",user.getCode());
-                            editor.commit();
-
-
-                            if(user.isAdmin()) {
-                                Log.e("Login access","ADMINISTRATOR");
-                                startActivity(new Intent(LoginActivity.this, AccountTest.class));
-                                // AQUI SUPOSTAMENTE MUDARA PARA OUTRA ACTIVITY
-
-                            } else {
-                                Log.e("Login access","NORMAL");
-                                startActivity(new Intent(LoginActivity.this, AccountTest.class));
-                            }
-
-                            //finish();
-                            //return;
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    }
-            );
-*/
-
+            SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            String isAdmin = sharedPref.getString("admin", "");
+            Log.e("admin", isAdmin);
+            if(isAdmin.contentEquals("true"))
+            {
+                //admin here
+                startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
+                finish();
+            }
+            else
+            {
+                //user here
+                startActivity(new Intent(LoginActivity.this, AccountTest.class));
+                finish();
+            }
+            // auth.signOut();
 
         }
+          //  final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         email=(EditText)findViewById(R.id.email_login);
         password=(EditText)findViewById(R.id.password_login);
 
@@ -126,6 +110,47 @@ public class LoginActivity extends AppCompatActivity  {
 
                 //checking if success
                 if (task.isSuccessful()) {
+
+
+                    DatabaseReference userReference = database.getReference();
+                    userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    User user = dataSnapshot.getValue(User.class);
+
+                                    SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+                                    SharedPreferences.Editor editor = sharedPref.edit();
+                                    editor.putString("code",user.getCode());
+                                    editor.commit();
+                                    editor.putString("admin",""+user.isAdmin());
+                                    editor.commit();
+
+
+                                    if(user.isAdmin()) {
+                                        Log.e("Login access","ADMINISTRATOR");
+                                        startActivity(new Intent(LoginActivity.this, AccountTest.class));
+                                        // AQUI SUPOSTAMENTE MUDARA PARA OUTRA ACTIVITY
+
+                                    } else {
+                                        Log.e("Login access","NORMAL");
+                                        startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
+                                    }
+
+                                    //finish();
+                                    //return;
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            }
+                    );
+
+
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     intent.putExtra("finishLogin", true);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities

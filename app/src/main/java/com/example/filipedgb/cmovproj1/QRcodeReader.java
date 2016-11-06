@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,17 +14,33 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.filipedgb.cmovproj1.classes.Order;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
 
 public class QRcodeReader extends AppCompatActivity {
 
+    private FirebaseApp app;
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode_reader);
         message = (TextView) findViewById(R.id.message);
+
+        app= FirebaseApp.getInstance();
+        auth= FirebaseAuth.getInstance(app);
+
+
+        boolean finish = getIntent().getBooleanExtra("finishQR", false);
+        if (finish) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
     }
 
     @Override
@@ -45,6 +62,22 @@ public class QRcodeReader extends AppCompatActivity {
         catch (ActivityNotFoundException anfe) {
           //  showDialog(this, "No Scanner Found", "Download a scanner code activity?", "Yes", "No").show();
         }
+    }
+
+    public void logout(View v) {
+        auth.signOut();
+        SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("code","");
+        editor.putString("admin","");
+        editor.commit();
+
+
+        Intent intent = new Intent(this, QRcodeReader.class);
+        intent.putExtra("finishQR", true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+        startActivity(intent);
+        finish();
     }
 
 

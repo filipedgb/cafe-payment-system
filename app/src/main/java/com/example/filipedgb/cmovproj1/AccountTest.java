@@ -133,6 +133,10 @@ public class AccountTest extends AppCompatActivity
         if(id== R.id.logout_sidebar)
         {
             auth.signOut();
+            SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("code","");
+            editor.commit();
 
 
             Intent intent = new Intent(this, AccountTest.class);
