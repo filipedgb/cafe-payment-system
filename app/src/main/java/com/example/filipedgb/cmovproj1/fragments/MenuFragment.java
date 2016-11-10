@@ -280,6 +280,7 @@ public class MenuFragment extends Fragment {
                                 final DatabaseReference ref = database.getReference("vouchers");
                                 Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),2);
                                 String key = ref.push().getKey();
+                                voucher.setSerial(key);
                                 order.setOrder_id(key);
                                 ref.child(key).setValue(voucher);
                                 DatabaseReference mOrderReference = database.getReference("vouchers_by_user");

@@ -207,8 +207,8 @@ public class QRcodeReader extends AppCompatActivity {
                                         if(values_from_db.contains(iterable_element.replaceAll("\\s+",""))) {
                                           Log.e("yes","YES " + iterable_element + " is contained in db" );
                                         } else {
-
                                             blackListUser(order.getUser_code());
+                                            break;
                                         }
                                     }
 
