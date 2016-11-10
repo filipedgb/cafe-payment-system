@@ -1,28 +1,19 @@
 package com.example.filipedgb.cmovproj1.fragments;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.ButtonBarLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.example.filipedgb.cmovproj1.Product;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
-import com.example.filipedgb.cmovproj1.classes.User;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,28 +22,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class VouchersMenuFragmentFragment extends Fragment {
+public class VouchersMenuFragment extends Fragment {
 
 
     Order order;
     private FirebaseApp app;
     private FirebaseAuth auth;
 
-    public VouchersMenuFragmentFragment() {
+    public VouchersMenuFragment() {
     }
 
 
-    public static VouchersMenuFragmentFragment newInstance(Order order) {
-        VouchersMenuFragmentFragment fragment = new VouchersMenuFragmentFragment();
+    public static VouchersMenuFragment newInstance(Order order) {
+        VouchersMenuFragment fragment = new VouchersMenuFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("order", order);
         fragment.setArguments(bundle);
@@ -176,7 +159,7 @@ public class VouchersMenuFragmentFragment extends Fragment {
             }
 
             FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
-            Fragment fragment = QRFragment.newInstance(order);
+            Fragment fragment = CodeMenuFragment.newInstance(order);
             fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
 
         }
