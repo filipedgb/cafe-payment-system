@@ -1,5 +1,6 @@
 package com.example.filipedgb.cmovproj1.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.filipedgb.cmovproj1.Product;
-import com.example.filipedgb.cmovproj1.QRFragment;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.User;
@@ -54,12 +54,13 @@ public class MenuFragment extends Fragment {
             app= FirebaseApp.getInstance();
             auth= FirebaseAuth.getInstance(app);
 
+
+
+
+            //////////////////PRODUCTS///////////////////////////////////////////////////////////////////////////////
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference mPostReference = database.getReference("products");
             mPostReference.keepSynced(true);
-
-
-
             ValueEventListener postListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -109,10 +110,7 @@ public class MenuFragment extends Fragment {
                     v.findViewById(R.id.button3).setOnClickListener(new proceed_listener(listOfAllProducts,productViews));
                     l.addView(v);
 
-
                 }
-
-
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
@@ -124,6 +122,71 @@ public class MenuFragment extends Fragment {
             };
 
             mPostReference.addListenerForSingleValueEvent(postListener);
+
+            //////////////////VOUCHERS//////////////////////////////////////////////////////////////////////////////
+            mPostReference = database.getReference("vouchers_by_user").child(auth.getCurrentUser().getUid());
+            mPostReference.keepSynced(true);
+            database.getReference("vouchers").keepSynced(true);
+
+            ValueEventListener postListener_vouchers = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final LinearLayout l=(LinearLayout)  getView().findViewById(R.id.lineralayoutmenu);
+                    // l.removeAllViews();
+
+                    for (final DataSnapshot child: dataSnapshot.getChildren()) {
+
+                        DatabaseReference vaucherUserRef = database.getReference("vouchers_by_user").child(child.getValue(String.class));
+                        vaucherUserRef.keepSynced(true);
+
+                        Log.e("dataref",vaucherUserRef.getKey().toString());
+
+                        DatabaseReference vaucherRef = database.getReference("vouchers");
+                        vaucherRef.keepSynced(true);
+
+                        LayoutInflater inflator = getActivity().getLayoutInflater();
+                        final View voucherView = inflator.inflate(R.layout.content_voucher,null);
+
+                        vaucherRef.child(vaucherUserRef.getKey().toString()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+
+                                Voucher voucherObj = snapshot.getValue(Voucher.class);
+                                TextView name= (TextView) voucherView.findViewById(R.id.voucher_text);
+                                ImageView image= (ImageView) voucherView.findViewById(R.id.list_image);
+
+                                if(voucherObj.getType() == 1) {
+                                    name.setText("VOUCHER PIPOCAS GRATIS");
+                                    image.setImageResource(R.mipmap.popcorn);
+                                }
+                                else if(voucherObj.getType() == 2) {
+                                    name.setText("DESCONTO 5 %");
+                                    image.setImageResource(R.mipmap.coupon);
+
+                                }
+                                TextView used= (TextView) voucherView.findViewById(R.id.voucher_used);
+                                LinearLayout used_band=(LinearLayout) voucherView.findViewById(R.id.voucher_used_band);
+
+
+
+                                if(voucherObj.isUsed())  {used.setText("Usado"); used_band.setBackgroundColor(Color.parseColor("#FF4500"));}
+                                else  {used.setText("Válido"); used_band.setBackgroundColor(Color.parseColor("#2E8B57"));}
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) { }
+                        });
+                        l.addView(voucherView);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+
+            mPostReference.addListenerForSingleValueEvent(postListener_vouchers);
+
+
+
             return rootView;
         }
 
@@ -315,7 +378,7 @@ public class MenuFragment extends Fragment {
 
             Log.e("string",teste);
             FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
-            Fragment fragment = QRFragment.newInstance(new_order);
+            Fragment fragment = VouchersMenuFragmentFragment.newInstance(new_order);
            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
 
 
