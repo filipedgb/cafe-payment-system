@@ -248,6 +248,7 @@ public class MenuFragment extends Fragment {
             if(order.getOrder_price() > 20) {
                 Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),1);
                 String key = ref.push().getKey();
+                voucher.setSerial(key);
                 order.setOrder_id(key);
                 ref.child(key).setValue(voucher);
 
