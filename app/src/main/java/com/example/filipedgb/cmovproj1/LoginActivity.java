@@ -90,6 +90,7 @@ public class LoginActivity extends AppCompatActivity  {
 
         boolean finish = getIntent().getBooleanExtra("finishLogin", false);
         if (finish) {
+
             startActivity(new Intent(this, AccountTest.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             finish();
             return;
@@ -193,12 +194,6 @@ public class LoginActivity extends AppCompatActivity  {
 
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
 
-                   /*
-                    intent.putExtra("finishLogin", true);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-                    startActivity(intent);
-                    finish();
-                    */
                 } else {
                     //Log.e("teste2","3333");
                     Context context = getApplicationContext();

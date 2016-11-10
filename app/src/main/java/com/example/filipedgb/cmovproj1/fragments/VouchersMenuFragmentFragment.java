@@ -170,10 +170,14 @@ public class VouchersMenuFragmentFragment extends Fragment {
                 {
                     Log.e("ola","ola");
                     Log.e("cb",cb.getText().toString()+"-"+vouchers[counter].getCriptographic_signature());
-
+                    order.addVoucherToOrder(vouchers[counter].getSerial(),vouchers[counter].getCriptographic_signature());
                 }
                 counter++;
             }
+
+            FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
+            Fragment fragment = QRFragment.newInstance(order);
+            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
 
         }
 

@@ -1,4 +1,4 @@
-package com.example.filipedgb.cmovproj1;
+package com.example.filipedgb.cmovproj1.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.google.gson.Gson;
