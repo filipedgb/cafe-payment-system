@@ -12,10 +12,19 @@ public class Voucher {
 
     private int type; // 0 - coffe / 1 - popcorn / 2 - 5% discount
     private String user_id;
+    private String serial;
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
     private boolean used;
 
     private String criptographic_signature;
-    private int serial;
     private boolean signed;
 
 
@@ -27,7 +36,6 @@ public class Voucher {
         this.user_id = user_id_in;
         this.type = type_in;
         this.used = false;
-        this.serial = RandomUtils.nextInt(1,1000)+ RandomUtils.nextInt(100,500);
         this.signed = false;
         this.criptographic_signature = "";
     }
@@ -38,14 +46,6 @@ public class Voucher {
 
     public void setCriptographic_signature(String criptographic_signature) {
         this.criptographic_signature = criptographic_signature;
-    }
-
-    public int getSerial() {
-        return serial;
-    }
-
-    public void setSerial(int serial) {
-        this.serial = serial;
     }
 
     public boolean isSigned() {

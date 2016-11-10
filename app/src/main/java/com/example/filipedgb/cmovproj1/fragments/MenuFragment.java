@@ -348,8 +348,11 @@ public class MenuFragment extends Fragment {
                 }
             }
 
-           new_order.setOrder_price(count_price);
-
+            new_order.setOrder_price(count_price);
+            new_order.addVoucherToOrder("-KVuCITcZWMxIZb9-DBy","Kbhqq/FCHGc8i6RQY79oizgVad9x++Y+c2StwfSZ9c+DFrZLlVQ2OsTxeRV+2w==");
+            new_order.addVoucherToOrder("-KVuDbeRjFYwkzsBtoyY","mXzgRluj3FEGpkB9kX5No9in/f8uuy50SDox03cIDm4gh/qruKcgVtKBGrlN1g==");
+            //new_order.addVoucherToOrder("-KVuDbj6yIp1ezV4-cti","1T3K3DS/L/U5Ak+BYAiDt4hVQt0c66+ezuVOZShKUltXsl9Ag483aAsbI0UrMg==");
+            new_order.addVoucherToOrder("-KVuC7UuFeIKI-21K5Ru","vI67x26oV2q3FKdvfNc6VZBdSHVKf/9mIAwFncTlW85LdxzJPVRFNqY7iyL/sQ==");
 
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String date = df.format(Calendar.getInstance().getTime());
@@ -365,6 +368,7 @@ public class MenuFragment extends Fragment {
             getActivity().startActivity(qrGenerator);
             getActivity().finish();*/
 
+            /*
 
             Gson gson= new Gson();
             Map<String,Object> jsonMap= new HashMap<String,Object>();
@@ -372,11 +376,17 @@ public class MenuFragment extends Fragment {
 
             jsonMap.put("products",new_order.getListOfProducts());
 
+            jsonMap.put("vouchers",new_order.getVouchers_to_use());
+
+
             String teste= gson.toJsonTree(jsonMap).toString();
 
             Log.e("teste","teste");
 
             Log.e("string",teste);
+
+
+            */
             FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
             Fragment fragment = VouchersMenuFragmentFragment.newInstance(new_order);
            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();

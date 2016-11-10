@@ -90,7 +90,6 @@ public class LoginActivity extends AppCompatActivity  {
 
         boolean finish = getIntent().getBooleanExtra("finishLogin", false);
         if (finish) {
-
             startActivity(new Intent(this, AccountTest.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             finish();
             return;
@@ -129,13 +128,54 @@ public class LoginActivity extends AppCompatActivity  {
 
 
                                     if(user.isAdmin()) {
+
+                                        DatabaseReference adminRef = database.getReference();
+
+                                        adminRef.child("public_key").addListenerForSingleValueEvent(
+                                                new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        String public_key = dataSnapshot.child("key").getValue().toString();
+                                                        Log.e("public_key",public_key);
+
+                                                        SharedPreferences sharedPref = getSharedPreferences("public_key", 0);
+                                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                                        editor.putString("key",public_key);
+                                                        editor.commit();
+
+
+                                                    }
+
+
+                                                    @Override
+                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                    }
+                                                });
+
+
+                                        /*
+                                        SharedPreferences sharedPref = getSharedPreferences("user_info", 0);
+                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                        editor.putString("code",user.getCode());
+                                        editor.commit();
+                                        editor.putString("admin",""+user.isAdmin());
+                                        editor.commit();
+                                        */
+
+
+
                                         Log.e("Login access","ADMINISTRATOR");
-                                        startActivity(new Intent(LoginActivity.this, AccountTest.class));
-                                        // AQUI SUPOSTAMENTE MUDARA PARA OUTRA ACTIVITY
+                                        startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
+                                        finish();
+
+
 
                                     } else {
                                         Log.e("Login access","NORMAL");
-                                        startActivity(new Intent(LoginActivity.this, QRcodeReader.class));
+                                        startActivity(new Intent(LoginActivity.this, AccountTest.class));
+                                        finish();
+
                                     }
 
                                     //finish();
@@ -152,10 +192,13 @@ public class LoginActivity extends AppCompatActivity  {
 
 
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+                   /*
                     intent.putExtra("finishLogin", true);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
                     startActivity(intent);
                     finish();
+                    */
                 } else {
                     //Log.e("teste2","3333");
                     Context context = getApplicationContext();

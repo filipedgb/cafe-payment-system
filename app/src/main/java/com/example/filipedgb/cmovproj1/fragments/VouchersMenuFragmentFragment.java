@@ -24,8 +24,6 @@ import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
-import com.example.filipedgb.cmovproj1.fragments.dummy.DummyContent;
-import com.example.filipedgb.cmovproj1.fragments.dummy.DummyContent.DummyItem;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -107,7 +105,7 @@ public class VouchersMenuFragmentFragment extends Fragment {
                         public void onDataChange(DataSnapshot snapshot) {
                             Voucher voucherObj = snapshot.getValue(Voucher.class);
                             voucher.setCriptographic_signature(voucherObj.getCriptographic_signature());
-                            voucher.setSerial(voucherObj.getSerial());
+                            voucher.setSerial(snapshot.getKey());
                             voucher.setSigned(voucherObj.isSigned());
                             voucher.setType(voucherObj.getType());
                             voucher.setUser_id(voucherObj.getUser_id());
@@ -172,7 +170,6 @@ public class VouchersMenuFragmentFragment extends Fragment {
                 {
                     Log.e("ola","ola");
                     Log.e("cb",cb.getText().toString()+"-"+vouchers[counter].getCriptographic_signature());
-                    order.
 
                 }
                 counter++;

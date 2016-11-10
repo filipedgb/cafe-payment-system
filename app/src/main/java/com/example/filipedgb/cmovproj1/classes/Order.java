@@ -1,11 +1,14 @@
 package com.example.filipedgb.cmovproj1.classes;
 
+import android.util.Log;
+
 import com.example.filipedgb.cmovproj1.Product;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -18,18 +21,11 @@ public class Order implements Serializable {
     private String order_id;
     private Double order_price;
     private String user_code;
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
     private String created_at;
     private HashMap<String, Integer> listOfProducts;
     private Boolean order_paid;
+    private HashMap<String,String> vouchers_to_use;
+
 
     public Order() {
 
@@ -38,12 +34,23 @@ public class Order implements Serializable {
     public Order(String user_code_input) {
         order_paid = false;
         listOfProducts = new HashMap<String,Integer>();
+        vouchers_to_use = new HashMap<String,String>();
+
         user_code = user_code_input;
 
     }
 
     public void addProductToOrder(Product product, Integer quantity) {
         listOfProducts.put(product.getId(),quantity);
+    }
+
+
+    public void addVoucherToOrder(String voucher_key, String voucher_signature) {
+        if(vouchers_to_use.size() <= 3) {
+            vouchers_to_use.put(voucher_key, voucher_signature.replace("{","{\"").replace("==",""));
+        } else {
+            Log.e("WARNING","No more vouchers added because the limit was exceeded");
+        }
     }
 
     public void setConfirmPayment() {
@@ -87,6 +94,23 @@ public class Order implements Serializable {
 
     public void setUser_code(String user_code) {
         this.user_code = user_code;
+    }
+
+    public HashMap<String, String> getVouchers_to_use() {
+        return vouchers_to_use;
+    }
+
+    public void setVouchers_to_use(HashMap<String, String> vouchers_to_use) {
+        this.vouchers_to_use = vouchers_to_use;
+    }
+
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
 }

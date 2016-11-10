@@ -16,14 +16,26 @@ import android.widget.TextView;
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
+import java.io.StringReader;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class QRcodeReader extends AppCompatActivity {
 
     private FirebaseApp app;
     private FirebaseAuth auth;
+    private FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,24 +126,129 @@ public class QRcodeReader extends AppCompatActivity {
 
                 Gson gson = new Gson();
                 HashMap<String,Object> map=gson.fromJson(contents, HashMap.class);
+
+                Log.e("Map",map.toString());
+
+                Log.e("test1",map.get("listOfProducts").toString());
+                Log.e("test2",map.get("vouchers").toString());
+
+
+                String temp1 = map.get("vouchers").toString();
+
+                // remove brackets
+                temp1 = temp1.substring(1, temp1.length()-1);
+                String[] vouchers_string = temp1.split(",");
+                HashMap<String,String> vouchers = new HashMap<String,String>();
+
+                for(int i = 0; i < vouchers_string.length; i++) {
+                    String current = vouchers_string[i];
+                    String[] elements = current.split("=");
+                    vouchers.put(elements[0],elements[1]);
+                }
+
                 HashMap<String,Integer> products=gson.fromJson(map.get("listOfProducts").toString(), HashMap.class);
+
+
                 Order new_order=new Order(map.get("user_code").toString());
                 new_order.setOrder_id(map.get("order_id").toString());
                 new_order.setOrder_price(Double.valueOf(map.get("order_price").toString()));
-                new_order.setListOfProducts(products  );
+                new_order.setListOfProducts(products);
+                new_order.setVouchers_to_use(vouchers);
                 new_order.setOrder_paid(Boolean.valueOf(map.get("order_paid").toString()));
 
+                boolean approved = checkVouchersValidity(new_order);
 
+                Log.e("Vouchers approved:",""+approved);
 
                 Log.e("teste",new_order.getUser_code());
+                Log.e("teste vouchers",new_order.getVouchers_to_use().toString());
 
                // Order u = gson.fromJson(contents, Order.class);
               //  Log.e("name",u.getName());
 
-                message.setText("Success!\n\n"+contents);
+               // message.setText("Success!\n\n"+contents);
             }
         }
     }
+
+    public boolean checkVouchersValidity(final Order order) {
+        /* Verifies connection */
+        boolean connected = true;
+        boolean accepted = false;
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (true) {
+                    database = FirebaseDatabase.getInstance();
+                    DatabaseReference ref = database.getReference();
+
+                    ref.child("vouchers_by_user").child(order.getUser_code()).addValueEventListener(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    HashMap<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+                                    HashMap<String,String> vouchers = order.getVouchers_to_use();
+
+                                    Collection<String> keys_from_qr = vouchers.keySet();
+                                    Collection<Object> values_from_db = td.values();
+
+
+                                    Log.e("LIDO DA DB", td.toString());
+                                    Log.e("LIDO DO QR",vouchers.toString());
+
+                                    Log.e("ID FROM QR",keys_from_qr.toString());
+                                    Log.e("iD from DB",values_from_db.toString());
+
+                                    for (String iterable_element : keys_from_qr) {
+                                        if(values_from_db.contains(iterable_element.replaceAll("\\s+",""))) {
+                                          Log.e("yes","YES " + iterable_element + " is contained in db" );
+                                        } else {
+
+                                            blackListUser(order.getUser_code());
+                                        }
+                                    }
+
+
+                                }
+
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+
+
+
+
+
+                } else {
+                    Log.e("connection","not connected");
+                    connected = false;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.err.println("Listener was cancelled");
+            }
+        });
+
+
+        return accepted;
+    }
+
+    public void blackListUser(String userId) {
+
+    }
+
+
 
 
 }

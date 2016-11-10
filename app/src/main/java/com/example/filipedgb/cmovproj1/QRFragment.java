@@ -84,12 +84,14 @@ public class QRFragment extends Fragment {
 
         User user= new User("a","b","c","d");
 
+
         Gson gson = new Gson();
 
         Log.e("order",orderQr.getUser_code().toString());
         Log.e("order",orderQr.getOrder_id());
         Log.e("order",orderQr.getOrder_paid().toString());
         Log.e("order",orderQr.getListOfProducts().toString());
+        Log.e("order",orderQr.getVouchers_to_use().toString());
 
 
         Map<String,Object> jsonMap= new HashMap<String,Object>();
@@ -98,6 +100,7 @@ public class QRFragment extends Fragment {
         jsonMap.put("user_code",orderQr.getUser_code());
         jsonMap.put("listOfProducts",orderQr.getListOfProducts());
         jsonMap.put("order_paid",orderQr.getOrder_paid());
+        jsonMap.put("vouchers",orderQr.getVouchers_to_use());
 
 
         String jsonInString = gson.toJsonTree(jsonMap).toString();
@@ -137,6 +140,7 @@ public class QRFragment extends Fragment {
     Bitmap encodeAsBitmap(String str) throws WriterException {
         BitMatrix result;
         try {
+            Log.e("String",str);
             result = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, WIDTH, WIDTH, null);
         }
         catch (IllegalArgumentException iae) {
