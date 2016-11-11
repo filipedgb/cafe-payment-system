@@ -1,5 +1,6 @@
 package com.example.filipedgb.cmovproj1.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
@@ -22,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class VouchersMenuFragment extends Fragment {
 
@@ -147,20 +151,51 @@ public class VouchersMenuFragment extends Fragment {
         public void onClick(View v)
         {
             int counter=0;
+            int counter_vouchers=0;
+            int counter_vouchers2=0;
+            ArrayList<Voucher> array= new ArrayList<Voucher>();
+
             for (CheckBox cb:typeButtons)
             {
                 if(cb.isChecked())
                 {
+                    counter_vouchers++;
+                    if(vouchers[counter].getType()==2)
+                    {
+                        counter_vouchers2++;
+                    }
+                    array.add(vouchers[counter]);
                     Log.e("ola","ola");
                     Log.e("cb",cb.getText().toString()+"-"+vouchers[counter].getCriptographic_signature());
-                    order.addVoucherToOrder(vouchers[counter].getSerial(),vouchers[counter].getCriptographic_signature());
+
                 }
                 counter++;
             }
+            if(counter_vouchers<=3 && counter_vouchers2<=1)
+            {
+                for(Voucher voucher_obj:array)
+                {
+                    order.addVoucherToOrder(voucher_obj.getSerial(),voucher_obj.getCriptographic_signature());
+                }
+                FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
+                Fragment fragment = CodeMenuFragment.newInstance(order);
+                fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
+            }
 
-            FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
-            Fragment fragment = CodeMenuFragment.newInstance(order);
-            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
+            if(counter_vouchers>3)
+            {
+                Context context = getContext();
+                Toast toast = Toast.makeText(context, "Só pode selecionar 3 vouchers", Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+            if(counter_vouchers2>1)
+            {
+                Context context = getContext();
+                Toast toast = Toast.makeText(context, "Só pode selecionar 1 voucher de desconto total", Toast.LENGTH_LONG);
+                toast.show();
+            }
+
 
         }
 
