@@ -106,7 +106,7 @@ public class MenuFragment extends Fragment {
 
 
 
-                    button.findViewById(R.id.button3).setOnClickListener(new proceed_listener(listOfAllProducts,productViews));
+                    button.findViewById(R.id.buttonProceed).setOnClickListener(new proceed_listener(listOfAllProducts,productViews));
                     LinearLayout l2=(LinearLayout) getView().findViewById(R.id.linearlayoutbuttonmenu) ;
                     l2.addView(button);
 

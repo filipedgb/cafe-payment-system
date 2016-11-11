@@ -11,9 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.filipedgb.cmovproj1.classes.Order;
+import com.google.android.gms.vision.text.Line;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -165,6 +167,12 @@ public class QRcodeReader extends AppCompatActivity {
                 new_order.setOrder_paid(Boolean.valueOf(map.get("order_paid").toString()));
 
                 boolean approved = checkVouchersValidity(new_order);
+                approved=true;
+                TextView tv= new TextView(getApplicationContext());
+
+                tv.setText(new_order.getUser_code()+"-"+approved);
+                LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
+                llcodes.addView(tv);
 
                 Log.e("Vouchers approved:",""+approved);
 
