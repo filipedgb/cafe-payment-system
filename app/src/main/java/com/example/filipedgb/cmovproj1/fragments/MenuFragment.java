@@ -24,13 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -390,7 +387,7 @@ public class MenuFragment extends Fragment {
 
             */
             FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
-            Fragment fragment = VouchersMenuFragmentFragment.newInstance(new_order);
+            Fragment fragment = VouchersMenuFragment.newInstance(new_order);
            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
 
 
