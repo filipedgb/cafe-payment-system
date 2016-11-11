@@ -22,14 +22,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 
-import java.io.StringReader;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class QRcodeReader extends AppCompatActivity {
 
@@ -181,7 +180,7 @@ public class QRcodeReader extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 boolean connected = snapshot.getValue(Boolean.class);
-                if (true) {
+                if (false) {
                     database = FirebaseDatabase.getInstance();
                     DatabaseReference ref = database.getReference();
 
@@ -201,15 +200,21 @@ public class QRcodeReader extends AppCompatActivity {
                                     Log.e("LIDO DO QR",vouchers.toString());
 
                                     Log.e("ID FROM QR",keys_from_qr.toString());
-                                    Log.e("iD from DB",values_from_db.toString());
+                                    Log.e("ID from DB",values_from_db.toString());
+                                    boolean blacklisted = false;
 
                                     for (String iterable_element : keys_from_qr) {
                                         if(values_from_db.contains(iterable_element.replaceAll("\\s+",""))) {
                                           Log.e("yes","YES " + iterable_element + " is contained in db" );
                                         } else {
                                             blackListUser(order.getUser_code());
+                                            blacklisted = true;
                                             break;
                                         }
+                                    }
+
+                                    if(!blacklisted) {
+                                        // Process order
                                     }
 
 
@@ -230,7 +235,48 @@ public class QRcodeReader extends AppCompatActivity {
 
                 } else {
                     Log.e("connection","not connected");
-                    connected = false;
+                    HashMap<String,String> vouchers = order.getVouchers_to_use();
+
+                    try {
+                        Iterator it = vouchers.entrySet().iterator();
+
+                        Signature signature = Signature.getInstance("SHA1withRSA");
+                        SharedPreferences sharedPref = getSharedPreferences("public_key", 0);
+                        String public_key = sharedPref.getString("key", "Nao encontrou");
+                        Log.e("Publicfromshared",public_key+"");
+                        System.out.println(public_key);
+
+                        while (it.hasNext()) {
+                            Map.Entry pair = (Map.Entry)it.next();
+
+                            /*
+                            signature.initVerify(get PublicKey(currentActivity));
+                            signature.update(vouchers.get());
+
+
+                            //boolean verify_result = signature.verify(sign); //sign é a signature do voucher em bytes
+
+                            if(verify_result){
+                                Log.d("VOUCHER", "RSA VOUCHER BOM!!");
+                            }
+                            else{
+                                Log.d("VOUCHER", "RSA VOUCHER MAU!!");
+                            }
+                            */
+
+                            //System.out.println(pair.getKey() + " = " + pair.getValue());
+                            it.remove(); // avoids a ConcurrentModificationException
+
+                        }
+
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+
+
                 }
             }
 
@@ -245,10 +291,11 @@ public class QRcodeReader extends AppCompatActivity {
     }
 
     public void blackListUser(String userId) {
-
+        final DatabaseReference ref = database.getReference("blacklist");
+        ref.keepSynced(true);
+        String key = ref.push().getKey();
+        ref.child(key).setValue(userId);
     }
-
-
 
 
 }
