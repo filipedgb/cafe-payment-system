@@ -3,9 +3,12 @@ package com.example.filipedgb.cmovproj1;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,9 +33,11 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -168,49 +173,7 @@ public class QRcodeReader extends AppCompatActivity {
                 new_order.setVouchers_to_use(vouchers);
                 new_order.setOrder_paid(Boolean.valueOf(map.get("order_paid").toString()));
 
-                boolean approved = checkVouchersValidity(new_order);
-                approved=true;
-
-
-                if(approved)
-                {
-
-                    //create order code
-                    String code="";
-                    Random rand = new Random();
-                    int  n = rand.nextInt(9);code+=n;
-                    n=rand.nextInt(9); code+=n;
-                    n=rand.nextInt(9); code+=n;
-
-                    //get user name
-                    LayoutInflater inflator= getLayoutInflater();
-                    final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
-                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference userRef = database.getReference("user_meta");
-                    userRef.keepSynced(true);
-                    final String finalCode = code;
-                    userRef.child(new_order.getUser_code()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(dataSnapshot.child("name").getValue().toString());
-                            ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText(finalCode);
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-                    //add code order to terminal screen
-                    LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
-                    llcodes.addView(orderView);
-                }
-
-
-                Log.e("Vouchers approved:",""+approved);
-
-                Log.e("teste",new_order.getUser_code());
-                Log.e("teste vouchers",new_order.getVouchers_to_use().toString());
+                checkVouchersValidity(new_order);
 
                // Order u = gson.fromJson(contents, Order.class);
               //  Log.e("name",u.getName());
@@ -220,17 +183,54 @@ public class QRcodeReader extends AppCompatActivity {
         }
     }
 
-    public boolean checkVouchersValidity(final Order order) {
+    public void processOrder(Order new_order) {
+        TextView tv= new TextView(getApplicationContext());
+
+        //create order code
+        String code="";
+        Random rand = new Random();
+        int  n = rand.nextInt(9);code+=n;
+        n=rand.nextInt(9); code+=n;
+        n=rand.nextInt(9); code+=n;
+
+        //get user name
+        LayoutInflater inflator= getLayoutInflater();
+        final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = database.getReference("user_meta");
+        userRef.keepSynced(true);
+        final String finalCode = code;
+        userRef.child(new_order.getUser_code()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(dataSnapshot.child("name").getValue().toString());
+                ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText(finalCode);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //add code order to terminal screen
+        LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
+        llcodes.addView(orderView);
+
+    }
+
+    public void checkVouchersValidity(final Order order) {
         /* Verifies connection */
         boolean connected = true;
-        boolean accepted = false;
+        final boolean accepted = false;
 
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (false) {
+                boolean connected = isNetworkAvailable();
+                if(connected) {
+                    Log.e("connection","connected");
+
                     database = FirebaseDatabase.getInstance();
                     DatabaseReference ref = database.getReference();
 
@@ -238,7 +238,7 @@ public class QRcodeReader extends AppCompatActivity {
                             new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
+                                    boolean blacklisted = false;
                                     HashMap<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
                                     HashMap<String,String> vouchers = order.getVouchers_to_use();
 
@@ -251,7 +251,7 @@ public class QRcodeReader extends AppCompatActivity {
 
                                     Log.e("ID FROM QR",keys_from_qr.toString());
                                     Log.e("ID from DB",values_from_db.toString());
-                                    boolean blacklisted = false;
+
 
                                     for (String iterable_element : keys_from_qr) {
                                         if(values_from_db.contains(iterable_element.replaceAll("\\s+",""))) {
@@ -264,7 +264,8 @@ public class QRcodeReader extends AppCompatActivity {
                                     }
 
                                     if(!blacklisted) {
-                                        // Process order
+                                        Log.e("ACEITE", "Vai processar a ORDER");
+                                        processOrder(order);
                                     }
 
 
@@ -279,45 +280,56 @@ public class QRcodeReader extends AppCompatActivity {
                 } else {
                     Log.e("connection","not connected");
                     HashMap<String,String> vouchers = order.getVouchers_to_use();
+                    boolean blacklisted = false;
 
                     try {
                         Iterator it = vouchers.entrySet().iterator();
-                        RSAPublicKey public_key = null;
+                        PublicKey public_key = null;
 
                         Signature signature = Signature.getInstance("SHA1withRSA");
                         SharedPreferences sharedPref = getSharedPreferences("public_key", 0);
                         String public_key_pem = sharedPref.getString("key", "Nao encontrou");
+
                         Log.e("Publicfromshared",public_key_pem+"");
 
-
-                        System.out.println(public_key_pem);
+                        String public_key_not_pem = public_key_pem.replace("-----BEGIN PUBLIC KEY-----\n", "");
+                        public_key_not_pem = public_key_not_pem.replace("\n-----END PUBLIC KEY-----", "");
 
                         try {
-                            public_key = getPublicKeyFromString(public_key_pem);
+                            public_key = getKey(public_key_not_pem);
                         } catch(Exception e) {
                             e.printStackTrace();
                         }
 
-                        Log.e("public key NOT pem",public_key+"");
+
+                        Log.e("public key object",public_key.toString()+"");
 
 
                         while (it.hasNext()) {
                             Map.Entry pair = (Map.Entry)it.next();
-                            byte[] sig = Base64.decode(pair.getValue().toString(),Base64.DEFAULT);
 
+                            String signature_fixed = pair.getValue().toString() + "==";
+
+                            byte[] sig = Base64.decode(signature_fixed,Base64.DEFAULT);
+
+                            Log.e("signature",pair.getValue().toString());
+                            Log.e("signature_fixed",signature_fixed);
+                            Log.e("signature", Arrays.toString(sig));
 
                             try {
                                 signature.initVerify(public_key);
-                                signature.update(sig);
+                                signature.update(pair.getKey().toString().getBytes());
 
                                 boolean verify_result = signature.verify(sig); //sign é a signature do voucher em bytes
 
-
                                 if(verify_result){
-                                    Log.e("VOUCHER", "RSA VOUCHER BOM!!");
+                                    Log.e("VoucherVerification", "Successful.");
                                 }
                                 else{
-                                    Log.e("VOUCHER", "RSA VOUCHER MAU!!");
+                                    Log.e("VoucherVerification", "Failed.");
+                                    blackListUser(order.getUser_code());
+                                    blacklisted = true;
+                                    break;
                                 }
 
                             } catch(Exception e) {
@@ -329,6 +341,11 @@ public class QRcodeReader extends AppCompatActivity {
                             //System.out.println(pair.getKey() + " = " + pair.getValue());
                             it.remove(); // avoids a ConcurrentModificationException
 
+                        }
+
+                        if(!blacklisted) {
+                            Log.e("ACEITE", "Vai processar a ORDER");
+                            processOrder(order);
                         }
 
                     } catch (NoSuchAlgorithmException e) {
@@ -347,9 +364,6 @@ public class QRcodeReader extends AppCompatActivity {
                 System.err.println("Listener was cancelled");
             }
         });
-
-
-        return accepted;
     }
 
     /**
@@ -362,22 +376,23 @@ public class QRcodeReader extends AppCompatActivity {
      * @throws IOException
      * @throws GeneralSecurityException
      */
-    public static RSAPublicKey getPublicKeyFromString(String key) throws IOException, GeneralSecurityException {
-        String publicKeyPEM = key;
 
-        // Remove the first and last lines
-        publicKeyPEM = publicKeyPEM.replace("-----BEGIN PUBLIC KEY-----", "");
-        publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----", "");
 
-        Log.e("Coisas",publicKeyPEM);
-        // Base64 decode data
-        byte[] encoded = Base64.decode(publicKeyPEM,Base64.DEFAULT);
+    public static PublicKey getKey(String key){
+        try{
+            Log.e("Dentro do getkey",key);
+            byte[] byteKey = Base64.decode(key.getBytes(), Base64.DEFAULT);
+            X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
+            KeyFactory kf = KeyFactory.getInstance("RSA");
 
-        Log.e("encoded",encoded.toString());
+            return kf.generatePublic(X509publicKey);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            Log.e("error",e.toString());
+        }
 
-        KeyFactory kf = KeyFactory.getInstance("RSA");
-        RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(new X509EncodedKeySpec(encoded));
-        return pubKey;
+        return null;
     }
 
     public void blackListUser(String userId) {
@@ -385,6 +400,13 @@ public class QRcodeReader extends AppCompatActivity {
         ref.keepSynced(true);
         String key = ref.push().getKey();
         ref.child(key).setValue(userId);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
