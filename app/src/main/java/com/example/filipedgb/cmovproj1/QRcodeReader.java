@@ -31,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import org.apache.commons.lang3.RandomUtils;
+
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -364,9 +366,6 @@ public class QRcodeReader extends AppCompatActivity {
     }
 
 
-
-
-
     public static PublicKey getKey(String key){
         try{
             Log.e("Dentro do getkey",key);
@@ -404,9 +403,8 @@ public class QRcodeReader extends AppCompatActivity {
         final DatabaseReference ref = database.getReference("vouchers");
         ref.keepSynced(true);
 
-
         if(order.getOrder_price() > 20) {
-            Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),1);
+            Voucher voucher = new Voucher(auth.getCurrentUser().getUid(), RandomUtils.nextInt(0,1));
             String key = ref.push().getKey();
             voucher.setSerial(key);
             order.setOrder_id(key);
@@ -445,9 +443,7 @@ public class QRcodeReader extends AppCompatActivity {
                             ref.child(key).setValue(voucher);
                             DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
                             mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
-
                         }
-
                     }
 
                     @Override
