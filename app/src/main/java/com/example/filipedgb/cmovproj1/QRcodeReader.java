@@ -23,12 +23,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import android.util.Base64;
+
+
 
 public class QRcodeReader extends AppCompatActivity {
 
@@ -226,43 +235,55 @@ public class QRcodeReader extends AppCompatActivity {
 
                                 }
                             });
-
-
-
-
-
-
-
                 } else {
                     Log.e("connection","not connected");
                     HashMap<String,String> vouchers = order.getVouchers_to_use();
 
                     try {
                         Iterator it = vouchers.entrySet().iterator();
+                        RSAPublicKey public_key = null;
 
                         Signature signature = Signature.getInstance("SHA1withRSA");
                         SharedPreferences sharedPref = getSharedPreferences("public_key", 0);
-                        String public_key = sharedPref.getString("key", "Nao encontrou");
-                        Log.e("Publicfromshared",public_key+"");
-                        System.out.println(public_key);
+                        String public_key_pem = sharedPref.getString("key", "Nao encontrou");
+                        Log.e("Publicfromshared",public_key_pem+"");
+
+
+                        System.out.println(public_key_pem);
+
+                        try {
+                            public_key = getPublicKeyFromString(public_key_pem);
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        Log.e("public key NOT pem",public_key+"");
+
 
                         while (it.hasNext()) {
                             Map.Entry pair = (Map.Entry)it.next();
-
-                            /*
-                            signature.initVerify(get PublicKey(currentActivity));
-                            signature.update(vouchers.get());
+                            byte[] sig = Base64.decode(pair.getValue().toString(),Base64.DEFAULT);
 
 
-                            //boolean verify_result = signature.verify(sign); //sign é a signature do voucher em bytes
+                            try {
+                                signature.initVerify(public_key);
+                                signature.update(sig);
 
-                            if(verify_result){
-                                Log.d("VOUCHER", "RSA VOUCHER BOM!!");
+                                boolean verify_result = signature.verify(sig); //sign é a signature do voucher em bytes
+
+
+                                if(verify_result){
+                                    Log.e("VOUCHER", "RSA VOUCHER BOM!!");
+                                }
+                                else{
+                                    Log.e("VOUCHER", "RSA VOUCHER MAU!!");
+                                }
+
+                            } catch(Exception e) {
+                                e.printStackTrace();
+
                             }
-                            else{
-                                Log.d("VOUCHER", "RSA VOUCHER MAU!!");
-                            }
-                            */
+
 
                             //System.out.println(pair.getKey() + " = " + pair.getValue());
                             it.remove(); // avoids a ConcurrentModificationException
@@ -288,6 +309,34 @@ public class QRcodeReader extends AppCompatActivity {
 
 
         return accepted;
+    }
+
+    /**
+     * FUNCTION COPIED FROM https://ricardo-sequeira.com/java-encryptiondecryption-with-rsa/
+     *
+     * Constructs a public key (RSA) from the given string
+     *
+     * @param key PEM Public Key
+     * @return RSA Public Key
+     * @throws IOException
+     * @throws GeneralSecurityException
+     */
+    public static RSAPublicKey getPublicKeyFromString(String key) throws IOException, GeneralSecurityException {
+        String publicKeyPEM = key;
+
+        // Remove the first and last lines
+        publicKeyPEM = publicKeyPEM.replace("-----BEGIN PUBLIC KEY-----", "");
+        publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----", "");
+
+        Log.e("Coisas",publicKeyPEM);
+        // Base64 decode data
+        byte[] encoded = Base64.decode(publicKeyPEM,Base64.DEFAULT);
+
+        Log.e("encoded",encoded.toString());
+
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(new X509EncodedKeySpec(encoded));
+        return pubKey;
     }
 
     public void blackListUser(String userId) {
