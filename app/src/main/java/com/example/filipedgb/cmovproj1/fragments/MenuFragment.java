@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -73,6 +74,8 @@ public class MenuFragment extends Fragment {
                     ImageView[] plusButtons = new ImageView[numberProducts];
                     TextView[] qnty = new TextView[numberProducts];
                     Product[] listOfAllProducts = new Product[numberProducts];
+                    LayoutInflater inflator2= getActivity().getLayoutInflater();
+                    View button=inflator2.inflate(R.layout.proceed_button,null);
 
                     for (DataSnapshot child: dataSnapshot.getChildren()) {
 
@@ -102,10 +105,10 @@ public class MenuFragment extends Fragment {
                     }
 
 
-                    LayoutInflater inflator= getActivity().getLayoutInflater();
-                    View v=inflator.inflate(R.layout.proceed_button,null);
-                    v.findViewById(R.id.button3).setOnClickListener(new proceed_listener(listOfAllProducts,productViews));
-                    l.addView(v);
+
+                    button.findViewById(R.id.button3).setOnClickListener(new proceed_listener(listOfAllProducts,productViews));
+                    LinearLayout l2=(LinearLayout) getView().findViewById(R.id.linearlayoutbuttonmenu) ;
+                    l2.addView(button);
 
                 }
 
@@ -119,70 +122,6 @@ public class MenuFragment extends Fragment {
             };
 
             mPostReference.addListenerForSingleValueEvent(postListener);
-
-            //////////////////VOUCHERS//////////////////////////////////////////////////////////////////////////////
-            mPostReference = database.getReference("vouchers_by_user").child(auth.getCurrentUser().getUid());
-            mPostReference.keepSynced(true);
-            database.getReference("vouchers").keepSynced(true);
-
-            ValueEventListener postListener_vouchers = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    final LinearLayout l=(LinearLayout)  getView().findViewById(R.id.lineralayoutmenu);
-                    // l.removeAllViews();
-
-                    for (final DataSnapshot child: dataSnapshot.getChildren()) {
-
-                        DatabaseReference vaucherUserRef = database.getReference("vouchers_by_user").child(child.getValue(String.class));
-                        vaucherUserRef.keepSynced(true);
-
-                        Log.e("dataref",vaucherUserRef.getKey().toString());
-
-                        DatabaseReference vaucherRef = database.getReference("vouchers");
-                        vaucherRef.keepSynced(true);
-
-                        LayoutInflater inflator = getActivity().getLayoutInflater();
-                        final View voucherView = inflator.inflate(R.layout.content_voucher,null);
-
-                        vaucherRef.child(vaucherUserRef.getKey().toString()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-
-                                Voucher voucherObj = snapshot.getValue(Voucher.class);
-                                TextView name= (TextView) voucherView.findViewById(R.id.voucher_text);
-                                ImageView image= (ImageView) voucherView.findViewById(R.id.list_image);
-
-                                if(voucherObj.getType() == 1) {
-                                    name.setText("VOUCHER PIPOCAS GRATIS");
-                                    image.setImageResource(R.mipmap.popcorn);
-                                }
-                                else if(voucherObj.getType() == 2) {
-                                    name.setText("DESCONTO 5 %");
-                                    image.setImageResource(R.mipmap.coupon);
-
-                                }
-                                TextView used= (TextView) voucherView.findViewById(R.id.voucher_used);
-                                LinearLayout used_band=(LinearLayout) voucherView.findViewById(R.id.voucher_used_band);
-
-
-
-                                if(voucherObj.isUsed())  {used.setText("Usado"); used_band.setBackgroundColor(Color.parseColor("#FF4500"));}
-                                else  {used.setText("Válido"); used_band.setBackgroundColor(Color.parseColor("#2E8B57"));}
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) { }
-                        });
-                        l.addView(voucherView);
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            };
-
-            mPostReference.addListenerForSingleValueEvent(postListener_vouchers);
-
-
 
             return rootView;
         }
