@@ -72,7 +72,6 @@ public class CodeMenuFragment extends Fragment {
             public void onClick(View v) {
                 EditText editText=(EditText) getActivity().findViewById(R.id.codeEditText);
                 SharedPreferences sharedPref = getContext().getSharedPreferences("user_info", 0);
-                Log.e("here","-----------------");
                 if(editText.getText().toString().contentEquals(sharedPref.getString("code","")))
                 {
                     FragmentManager fragmentManager =getActivity().getSupportFragmentManager();

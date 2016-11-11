@@ -17,9 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.util.Base64;
 
 import com.example.filipedgb.cmovproj1.classes.Order;
-import com.google.android.gms.vision.text.Line;
+import com.example.filipedgb.cmovproj1.classes.User;
+import com.example.filipedgb.cmovproj1.classes.Voucher;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,13 +31,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Signature;
-import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,8 +42,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
-
-import android.util.Base64;
 
 
 
@@ -78,7 +75,6 @@ public class QRcodeReader extends AppCompatActivity {
         bundle.putCharSequence("Message", message.getText());
     }
 
-
     static final String ACTION_SCAN = "com.google.zxing.client.android.SCAN";
     TextView message;
 
@@ -108,8 +104,6 @@ public class QRcodeReader extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
 
     private static AlertDialog showDialog(final Activity act, CharSequence title, CharSequence message, CharSequence buttonYes, CharSequence buttonNo) {
         AlertDialog.Builder downloadDialog = new AlertDialog.Builder(act);
@@ -167,9 +161,8 @@ public class QRcodeReader extends AppCompatActivity {
 
                 HashMap<String,Integer> products=gson.fromJson(map.get("listOfProducts").toString(), HashMap.class);
 
-
                 Order new_order=new Order(map.get("user_code").toString());
-                new_order.setOrder_id(map.get("order_id").toString());
+              //  new_order.setOrder_id(map.get("order_id").toString());
                 new_order.setOrder_price(Double.valueOf(map.get("order_price").toString()));
                 new_order.setListOfProducts(products);
                 new_order.setVouchers_to_use(vouchers);
@@ -178,11 +171,6 @@ public class QRcodeReader extends AppCompatActivity {
                 Log.e("Numero d vouchers:",new_order.getVouchers_to_use().size()+"");
                 processOrder(new_order);
 
-
-               // Order u = gson.fromJson(contents, Order.class);
-              //  Log.e("name",u.getName());
-
-               // message.setText("Success!\n\n"+contents);
             }
         }
     }
@@ -219,6 +207,11 @@ public class QRcodeReader extends AppCompatActivity {
         //add code order to terminal screen
         LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
         llcodes.addView(orderView);
+
+        saveToFirebase(new_order);
+        saveToFirebaseByUser(new_order);
+        updateTotalMoneySpent(new_order);
+        checkNewVouchers(new_order);
 
     }
 
@@ -370,16 +363,8 @@ public class QRcodeReader extends AppCompatActivity {
         });
     }
 
-    /**
-     * FUNCTION COPIED FROM https://ricardo-sequeira.com/java-encryptiondecryption-with-rsa/
-     *
-     * Constructs a public key (RSA) from the given string
-     *
-     * @param key PEM Public Key
-     * @return RSA Public Key
-     * @throws IOException
-     * @throws GeneralSecurityException
-     */
+
+
 
 
     public static PublicKey getKey(String key){
@@ -411,6 +396,94 @@ public class QRcodeReader extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
+    public void checkNewVouchers(Order order) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference ref = database.getReference("vouchers");
+        ref.keepSynced(true);
+
+
+        if(order.getOrder_price() > 20) {
+            Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),1);
+            String key = ref.push().getKey();
+            voucher.setSerial(key);
+            order.setOrder_id(key);
+            ref.child(key).setValue(voucher);
+
+            DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
+            mOrderReference.keepSynced(true);
+
+            mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
+        }
+    }
+
+
+    public void updateTotalMoneySpent(final Order order) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference userReference = database.getReference();
+        userReference.keepSynced(true);
+
+        userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        Double old_money = user.getMoneySpent();
+                        Double new_money = user.getMoneySpent()+order.getOrder_price();
+
+                        userReference.child("user_meta").child(auth.getCurrentUser().getUid()).child("moneySpent").setValue(new_money);
+
+                        /* Check if user's spent money is a multiple of 100 for vouchers */
+                        if( ((int)((old_money%1000)/100)) !=  ((int) ((new_money%1000)/100)) ) { // donwload dos codigos comparar o numero das centenas
+                            final DatabaseReference ref = database.getReference("vouchers");
+                            Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),2);
+                            String key = ref.push().getKey();
+                            voucher.setSerial(key);
+                            order.setOrder_id(key);
+                            ref.child(key).setValue(voucher);
+                            DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
+                            mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+        );
+    }
+
+    public void saveToFirebase(Order order) {
+        app = FirebaseApp.getInstance();
+        auth = FirebaseAuth.getInstance(app);
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mOrderReference = database.getReference("orders");
+        mOrderReference.keepSynced(true);
+        String key = mOrderReference.push().getKey();
+        order.setOrder_id(key);
+        mOrderReference.child(key).setValue(order);
+
+        //Log.e("Key",key);
+    }
+
+
+    public void saveToFirebaseByUser(Order order) {
+        app = FirebaseApp.getInstance();
+        auth = FirebaseAuth.getInstance(app);
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference mOrderReference = database.getReference("orders_by_user");
+        mOrderReference.keepSynced(true);
+
+        mOrderReference.child(order.getUser_code()).push().setValue(order.getOrder_id());
+
+
+        //Log.e("Key",key);
     }
 
 

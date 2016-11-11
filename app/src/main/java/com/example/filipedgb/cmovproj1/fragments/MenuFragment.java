@@ -48,12 +48,8 @@ public class MenuFragment extends Fragment {
 
             View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
-
             app= FirebaseApp.getInstance();
             auth= FirebaseAuth.getInstance(app);
-
-
-
 
             //////////////////PRODUCTS///////////////////////////////////////////////////////////////////////////////
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -175,96 +171,6 @@ public class MenuFragment extends Fragment {
             this.allProducts = allProductsIn;
         }
 
-        public void checkNewVouchers(Order order) {
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference ref = database.getReference("vouchers");
-            ref.keepSynced(true);
-
-
-            if(order.getOrder_price() > 20) {
-                Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),1);
-                String key = ref.push().getKey();
-                voucher.setSerial(key);
-                order.setOrder_id(key);
-                ref.child(key).setValue(voucher);
-
-                DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
-                mOrderReference.keepSynced(true);
-
-                mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
-            }
-        }
-
-
-        public void updateTotalMoneySpent(final Order order) {
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            final DatabaseReference userReference = database.getReference();
-            userReference.keepSynced(true);
-
-            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            Double old_money = user.getMoneySpent();
-                            Double new_money = user.getMoneySpent()+order.getOrder_price();
-
-                            userReference.child("user_meta").child(auth.getCurrentUser().getUid()).child("moneySpent").setValue(new_money);
-
-                                     /* Check if user's spent money is a multiple of 100 for vouchers */
-                            if( ((int)((old_money%1000)/100)) !=  ((int) ((new_money%1000)/100)) ) { // donwload dos codigos comparar o numero das centenas
-
-                                final DatabaseReference ref = database.getReference("vouchers");
-                                Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),2);
-                                String key = ref.push().getKey();
-                                voucher.setSerial(key);
-                                order.setOrder_id(key);
-                                ref.child(key).setValue(voucher);
-                                DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
-                                mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    }
-            );
-        }
-
-
-        public void saveToFirebase(Order order) {
-            app = FirebaseApp.getInstance();
-            auth = FirebaseAuth.getInstance(app);
-
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference mOrderReference = database.getReference("orders");
-            mOrderReference.keepSynced(true);
-            String key = mOrderReference.push().getKey();
-            order.setOrder_id(key);
-            mOrderReference.child(key).setValue(order);
-
-            //Log.e("Key",key);
-        }
-
-
-        public void saveToFirebaseByUser(Order order) {
-            app = FirebaseApp.getInstance();
-            auth = FirebaseAuth.getInstance(app);
-
-            final FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference mOrderReference = database.getReference("orders_by_user");
-            mOrderReference.keepSynced(true);
-
-            mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(order.getOrder_id());
-
-
-            //Log.e("Key",key);
-        }
-
-
         @Override
         public void onClick(View v)
         {
@@ -287,56 +193,14 @@ public class MenuFragment extends Fragment {
             }
 
             new_order.setOrder_price(count_price);
-         /*   new_order.addVoucherToOrder("-KVuCITcZWMxIZb9-DBy","Kbhqq/FCHGc8i6RQY79oizgVad9x++Y+c2StwfSZ9c+DFrZLlVQ2OsTxeRV+2w==");
-            new_order.addVoucherToOrder("-KVuDbeRjFYwkzsBtoyY","mXzgRluj3FEGpkB9kX5No9in/f8uuy50SDox03cIDm4gh/qruKcgVtKBGrlN1g==");
-            //new_order.addVoucherToOrder("-KVuDbj6yIp1ezV4-cti","1T3K3DS/L/U5Ak+BYAiDt4hVQt0c66+ezuVOZShKUltXsl9Ag483aAsbI0UrMg==");
-            new_order.addVoucherToOrder("-KVuC7UuFeIKI-21K5Ru","vI67x26oV2q3FKdvfNc6VZBdSHVKf/9mIAwFncTlW85LdxzJPVRFNqY7iyL/sQ==");
-*/
+
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String date = df.format(Calendar.getInstance().getTime());
             new_order.setCreated_at(date);
-            saveToFirebase(new_order);
-            saveToFirebaseByUser(new_order);
-            updateTotalMoneySpent(new_order);
-            checkNewVouchers(new_order);
-           // Log.e("firebase","done");
 
-         /*  Intent qrGenerator= new Intent(getContext(), QRcodeGenerator.class);
-            qrGenerator.putExtra("orderObject",new_order);
-            getActivity().startActivity(qrGenerator);
-            getActivity().finish();*/
-
-            /*
-
-            Gson gson= new Gson();
-            Map<String,Object> jsonMap= new HashMap<String,Object>();
-            jsonMap.put("user",new_order.getUser_code());
-
-            jsonMap.put("products",new_order.getListOfProducts());
-
-            jsonMap.put("vouchers",new_order.getVouchers_to_use());
-
-
-            String teste= gson.toJsonTree(jsonMap).toString();
-
-            Log.e("teste","teste");
-
-            Log.e("string",teste);
-
-
-            */
             FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
             Fragment fragment = VouchersMenuFragment.newInstance(new_order);
-           fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
-
-
-
-
+            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
         }
-
-
-
     };
-
-
 }

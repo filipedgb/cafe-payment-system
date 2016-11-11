@@ -89,14 +89,14 @@ public class QRFragment extends Fragment {
         Gson gson = new Gson();
 
         Log.e("order",orderQr.getUser_code().toString());
-        Log.e("order",orderQr.getOrder_id());
+        //Log.e("order",orderQr.getOrder_id());
         Log.e("order",orderQr.getOrder_paid().toString());
         Log.e("order",orderQr.getListOfProducts().toString());
         Log.e("order",orderQr.getVouchers_to_use().toString());
 
 
         Map<String,Object> jsonMap= new HashMap<String,Object>();
-        jsonMap.put("order_id",orderQr.getOrder_id());
+        //jsonMap.put("order_id",orderQr.getOrder_id());
         jsonMap.put("order_price",orderQr.getOrder_price());
         jsonMap.put("user_code",orderQr.getUser_code());
         jsonMap.put("listOfProducts",orderQr.getListOfProducts());

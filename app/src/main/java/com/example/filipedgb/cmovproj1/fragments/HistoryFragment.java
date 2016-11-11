@@ -22,14 +22,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public class HistoryFragment extends Fragment {
 
-
     private FirebaseApp app;
     private FirebaseAuth auth;
 
     public HistoryFragment() {
         // Required empty public constructor
     }
-
 
     private static double round (double value, int precision) {
         int scale = (int) Math.pow(10, precision);
@@ -41,14 +39,7 @@ public class HistoryFragment extends Fragment {
         app= FirebaseApp.getInstance();
         auth= FirebaseAuth.getInstance(app);
 
-
-
-
-
-
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
-
-
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mPostReference = database.getReference("orders_by_user").child(auth.getCurrentUser().getUid());
@@ -121,13 +112,6 @@ public class HistoryFragment extends Fragment {
                                     });
                                 }
                             }
-
-
-
-
-
-
-
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) { }
@@ -141,8 +125,6 @@ public class HistoryFragment extends Fragment {
         };
 
         mPostReference.addListenerForSingleValueEvent(postListener);
-
-
 
         return rootView;
     }

@@ -177,6 +177,11 @@ public class VouchersMenuFragment extends Fragment {
                 {
                     order.addVoucherToOrder(voucher_obj.getSerial(),voucher_obj.getCriptographic_signature());
                 }
+
+                if(counter_vouchers2 == 1) {
+                    order.setOrder_price(order.getOrder_price()*0.95);
+                }
+
                 FragmentManager fragmentManager =getActivity().getSupportFragmentManager();
                 Fragment fragment = CodeMenuFragment.newInstance(order);
                 fragmentManager.beginTransaction().replace(R.id.content_frame,fragment).commit();
@@ -195,6 +200,8 @@ public class VouchersMenuFragment extends Fragment {
                 Toast toast = Toast.makeText(context, "Só pode selecionar 1 voucher de desconto total", Toast.LENGTH_LONG);
                 toast.show();
             }
+
+
 
 
         }
