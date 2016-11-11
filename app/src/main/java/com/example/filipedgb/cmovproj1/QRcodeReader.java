@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import android.util.Base64;
 
@@ -168,11 +170,42 @@ public class QRcodeReader extends AppCompatActivity {
 
                 boolean approved = checkVouchersValidity(new_order);
                 approved=true;
-                TextView tv= new TextView(getApplicationContext());
 
-                tv.setText(new_order.getUser_code()+"-"+approved);
-                LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
-                llcodes.addView(tv);
+
+                if(approved)
+                {
+
+                    //create order code
+                    String code="";
+                    Random rand = new Random();
+                    int  n = rand.nextInt(9);code+=n;
+                    n=rand.nextInt(9); code+=n;
+                    n=rand.nextInt(9); code+=n;
+
+                    //get user name
+                    LayoutInflater inflator= getLayoutInflater();
+                    final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
+                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference userRef = database.getReference("user_meta");
+                    userRef.keepSynced(true);
+                    final String finalCode = code;
+                    userRef.child(new_order.getUser_code()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(dataSnapshot.child("name").getValue().toString());
+                            ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText(finalCode);
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //add code order to terminal screen
+                    LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
+                    llcodes.addView(orderView);
+                }
+
 
                 Log.e("Vouchers approved:",""+approved);
 

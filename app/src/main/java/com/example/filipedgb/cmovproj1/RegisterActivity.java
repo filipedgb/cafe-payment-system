@@ -140,8 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
         code="";
         Random rand = new Random();
 
-        int  n = rand.nextInt(9);
-        code+=n;
+        int  n = rand.nextInt(9);code+=n;
         n=rand.nextInt(9); code+=n;
         n=rand.nextInt(9); code+=n;
         n=rand.nextInt(9); code+=n;
