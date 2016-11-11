@@ -157,10 +157,12 @@ public class QRcodeReader extends AppCompatActivity {
                 String[] vouchers_string = temp1.split(",");
                 HashMap<String,String> vouchers = new HashMap<String,String>();
 
-                for(int i = 0; i < vouchers_string.length; i++) {
-                    String current = vouchers_string[i];
-                    String[] elements = current.split("=");
-                    vouchers.put(elements[0],elements[1]);
+                if(!map.get("vouchers").toString().equals("{}")) {
+                    for (int i = 0; i < vouchers_string.length; i++) {
+                        String current = vouchers_string[i];
+                        String[] elements = current.split("=");
+                        vouchers.put(elements[0], elements[1]);
+                    }
                 }
 
                 HashMap<String,Integer> products=gson.fromJson(map.get("listOfProducts").toString(), HashMap.class);
@@ -173,7 +175,9 @@ public class QRcodeReader extends AppCompatActivity {
                 new_order.setVouchers_to_use(vouchers);
                 new_order.setOrder_paid(Boolean.valueOf(map.get("order_paid").toString()));
 
-                checkVouchersValidity(new_order);
+                Log.e("Numero d vouchers:",new_order.getVouchers_to_use().size()+"");
+                processOrder(new_order);
+
 
                // Order u = gson.fromJson(contents, Order.class);
               //  Log.e("name",u.getName());
