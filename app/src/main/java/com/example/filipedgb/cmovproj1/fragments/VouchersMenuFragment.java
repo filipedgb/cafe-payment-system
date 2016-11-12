@@ -101,12 +101,17 @@ public class VouchersMenuFragment extends Fragment {
                             voucher.setType(voucherObj.getType());
                             voucher.setUser_id(voucherObj.getUser_id());
                             cb.setTextColor(Color.BLACK);
-                            if(voucherObj.getType() == 1) {
-                                cb.setText("VOUCHER PIPOCAS GRATIS");
+                            if(voucherObj.getType() ==0)
+                            {
+                                cb.setText("Voucher Café Grátis");
+                                cb.setVisibility(View.VISIBLE);
+                            }
+                            else if(voucherObj.getType() == 1) {
+                                cb.setText("Voucher Pipocas Grátis");
                                 cb.setVisibility(View.VISIBLE);
                             }
                             else if(voucherObj.getType() == 2) {
-                                cb.setText("DESCONTO 5 %");
+                                cb.setText("Vouchers Desconto 5%");
                                 cb.setVisibility(View.VISIBLE);
                             }
                             if(voucherObj.isUsed())

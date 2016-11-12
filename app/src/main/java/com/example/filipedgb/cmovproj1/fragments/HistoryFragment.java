@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.filipedgb.cmovproj1.AccountTest;
@@ -93,6 +94,8 @@ public class HistoryFragment extends Fragment {
                                 {
                                     DatabaseReference productRef = database.getReference("products");
                                     productRef.keepSynced(true);
+                                    final LayoutInflater inflator=  getActivity().getLayoutInflater();
+
 
                                     productRef.child(key).addValueEventListener(new ValueEventListener() {
                                         @Override
@@ -100,13 +103,21 @@ public class HistoryFragment extends Fragment {
 
                                             LinearLayout linearlayoutproducts=(LinearLayout)ordersView.findViewById(R.id.linearlayoutproducts);
 
-                                            TextView tv= new TextView(linearlayoutproducts.getContext());
-                                            tv.setTextColor(Color.BLACK);
+                                            final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
+                                            RelativeLayout rel= (RelativeLayout) orderView.findViewById(R.id.relativelayoutTerminalorder);
+                                            final float scale = getContext().getResources().getDisplayMetrics().density;
+                                            int pixels5 = (int) (5 * scale + 0.5f);
+                                            int pixels10 = (int) (10 * scale + 0.5f);
+
+                                            rel.setPadding(pixels10,pixels5,pixels10,pixels5);
+
                                             double total= Double.parseDouble( (snapshot.child("price").getValue().toString())) * Double.parseDouble( orderObj.getListOfProducts().get(key).toString());
 
-                                            tv.setText(orderObj.getListOfProducts().get(key)+"  "+snapshot.child("name").getValue()+"   "+ round(total,2));
+                                            ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(orderObj.getListOfProducts().get(key)+"  "+snapshot.child("name").getValue());
+                                            ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText(round(total,2)+"€");
 
-                                            linearlayoutproducts.addView(tv);
+
+                                            linearlayoutproducts.addView(orderView);
 
                                         }
 

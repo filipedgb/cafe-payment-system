@@ -81,12 +81,18 @@ public class VouchersFragment extends Fragment {
                             TextView name= (TextView) voucherView.findViewById(R.id.voucher_text);
                             ImageView image= (ImageView) voucherView.findViewById(R.id.list_image);
 
-                            if(voucherObj.getType() == 1) {
-                                name.setText("VOUCHER PIPOCAS GRATIS");
+                            if(voucherObj.getType() ==0)
+                            {
+                                name.setText("Voucher Café Grátis");
+                                image.setImageResource(R.mipmap.coffe);
+                            }
+
+                            else if(voucherObj.getType() == 1) {
+                                name.setText("Voucher Pipocas Grátis");
                                 image.setImageResource(R.mipmap.popcorn);
                             }
                             else if(voucherObj.getType() == 2) {
-                                name.setText("DESCONTO 5 %");
+                                name.setText("Vouchers Desconto 5%");
                                 image.setImageResource(R.mipmap.coupon);
 
                             }
