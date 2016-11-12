@@ -326,12 +326,6 @@ public class QRcodeReader extends AppCompatActivity {
 
                 });
 
-
-
-
-
-
-                it.remove(); // avoids a ConcurrentModificationException
             }
 
         }
@@ -345,11 +339,13 @@ public class QRcodeReader extends AppCompatActivity {
 
         llcodes.addView(orderViewFull);
 
+        Log.e("vouchers",new_order.getVouchers_to_use().toString());
 
-      //  saveToFirebase(new_order);
-      //  saveToFirebaseByUser(new_order);
-      //  updateTotalMoneySpent(new_order);
-       // checkNewVouchers(new_order);
+
+        saveToFirebase(new_order);
+      saveToFirebaseByUser(new_order);
+      updateTotalMoneySpent(new_order);
+        checkNewVouchers(new_order);
 
     }
 
@@ -599,6 +595,8 @@ public class QRcodeReader extends AppCompatActivity {
         String key = mOrderReference.push().getKey();
         order.setOrder_id(key);
         mOrderReference.child(key).setValue(order);
+
+        Log.e("vouchers",order.getVouchers_to_use().toString());
 
         //Log.e("Key",key);
     }

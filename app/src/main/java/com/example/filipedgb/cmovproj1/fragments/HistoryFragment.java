@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.filipedgb.cmovproj1.AccountTest;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
+import com.example.filipedgb.cmovproj1.classes.Voucher;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +22,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class HistoryFragment extends Fragment {
 
@@ -66,7 +70,7 @@ public class HistoryFragment extends Fragment {
 
                     DatabaseReference vaucherRef = database.getReference("orders");
                     ordersUserRef.keepSynced(true);
-                    LayoutInflater inflator = getActivity().getLayoutInflater();
+                    final LayoutInflater inflator = getActivity().getLayoutInflater();
                     final View ordersView = inflator.inflate(R.layout.content_order_history,null);
 
                     vaucherRef.child(ordersUserRef.getKey().toString()).addValueEventListener(new ValueEventListener() {
@@ -128,6 +132,77 @@ public class HistoryFragment extends Fragment {
 
                                     });
                                 }
+                            }
+
+                            if(orderObj.getVouchers_to_use()!=null)
+                            {
+                                Iterator it = orderObj.getVouchers_to_use().entrySet().iterator();
+                                while (it.hasNext()) {
+                                    Map.Entry pair = (Map.Entry)it.next();
+                                    Log.e("lol",pair.getKey() + " = " + pair.getValue());
+
+
+                                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                                    DatabaseReference productRef = database.getReference("vouchers").child(pair.getKey().toString().replaceAll("\\s+",""));
+                                    productRef.keepSynced(true);
+
+                                    productRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot snapshot) {
+
+                                            Voucher voucherObj = snapshot.getValue(Voucher.class);
+                                            if(voucherObj == null)
+                                            {
+                                                Log.e("null","");
+                                            }
+
+                                            LinearLayout linearlayoutproducts=(LinearLayout)ordersView.findViewById(R.id.listvouchershistory);
+
+                                            final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
+                                            RelativeLayout rel= (RelativeLayout) orderView.findViewById(R.id.relativelayoutTerminalorder);
+                                            final float scale = getResources().getDisplayMetrics().density;
+                                            int pixels5 = (int) (5 * scale + 0.5f);
+                                            int pixels10 = (int) (10 * scale + 0.5f);
+
+                                            rel.setPadding(pixels10,pixels5,pixels10,pixels5);
+
+                                            String name="";
+                                            if(voucherObj.getType() ==0)
+                                            {
+                                                name="Café Grátis";
+                                            }
+                                            else if(voucherObj.getType() ==1)
+                                            {
+                                                name="Pipocas Grátis";
+                                            }
+                                            else if(voucherObj.getType() ==2)
+                                            {
+                                                name="Desconto 5%";
+                                            }
+                                            ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(name);
+                                            ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText("");
+
+
+                                            linearlayoutproducts.addView(orderView);
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+
+                                    });
+
+
+
+
+
+
+                                    it.remove(); // avoids a ConcurrentModificationException
+                                }
+
                             }
                         }
                         @Override
