@@ -86,7 +86,7 @@ public class AccountTest extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.account_test, menu);
+       // getMenuInflater().inflate(R.menu.account_test, menu);
         try {
             if(auth.getCurrentUser()!=null)
             ((TextView) this.findViewById(R.id.mail_sidebar)).setText(auth.getCurrentUser().getEmail());
@@ -190,4 +190,11 @@ public class AccountTest extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
+    }
+
+
+
 }

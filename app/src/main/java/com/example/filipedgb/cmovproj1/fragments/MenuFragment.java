@@ -13,11 +13,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.filipedgb.cmovproj1.AccountTest;
 import com.example.filipedgb.cmovproj1.Product;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,6 +54,9 @@ public class MenuFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
+
+            ((AccountTest) getActivity())
+                    .setActionBarTitle("Menu");
 
             app= FirebaseApp.getInstance();
             auth= FirebaseAuth.getInstance(app);
@@ -95,6 +105,18 @@ public class MenuFragment extends Fragment {
 
                         plusButtons[counter] = (ImageView)   productViews[counter].findViewById(R.id.plus_sign);
                         plusButtons[counter].setOnClickListener(new MenuFragment.plusListener(qnty[counter]));
+
+
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        StorageReference storageRef = storage.getReferenceFromUrl("gs://cmovproject.appspot.com");
+                        StorageReference pathReference = storageRef.child("products/"+child.getKey().toString()+".jpg");
+                        ImageView imageView = (ImageView) productViews[counter].findViewById(R.id.list_image);
+                        // Load the image using Glide
+                        Glide.with(productViews[counter].getContext())
+                                .using(new FirebaseImageLoader())
+                                .load(pathReference)
+                                .into(imageView);
+
 
                         l.addView(productViews[counter]);
                         counter++;

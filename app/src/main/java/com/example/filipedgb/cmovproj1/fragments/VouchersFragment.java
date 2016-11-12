@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.filipedgb.cmovproj1.AccountTest;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.User;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
@@ -44,6 +45,7 @@ public class VouchersFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_vouchers, container, false);
 
+        ((AccountTest) getActivity()).setActionBarTitle("Vouchers");
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mPostReference = database.getReference("vouchers_by_user").child(auth.getCurrentUser().getUid());

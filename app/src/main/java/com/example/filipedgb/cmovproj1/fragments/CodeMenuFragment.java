@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.filipedgb.cmovproj1.AccountTest;
 import com.example.filipedgb.cmovproj1.CodeScreen;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
@@ -56,6 +57,8 @@ public class CodeMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_code_menu, container, false);
+
+        ((AccountTest) getActivity()).setActionBarTitle("Menu - Código de Segurança");
 
         order = (Order) getArguments().getSerializable("order");
 

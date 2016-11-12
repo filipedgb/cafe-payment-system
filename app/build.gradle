@@ -41,6 +41,8 @@ dependencies {
     compile 'com.virgilsecurity.sdk:android:3.2.0@aar'
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+    // FirebaseUI Storage only
+    compile 'com.firebaseui:firebase-ui-storage:0.6.0'
 
     testCompile 'junit:junit:4.12'
 }

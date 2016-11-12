@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.filipedgb.cmovproj1.AccountTest;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.Voucher;
@@ -52,6 +53,9 @@ public class VouchersMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_vouchersmenufragment, container, false);
+
+        ((AccountTest) getActivity()).setActionBarTitle("Menu - Vouchers");
+
 
         order = (Order) getArguments().getSerializable("order");
 

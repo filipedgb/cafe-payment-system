@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.filipedgb.cmovproj1.AccountTest;
 import com.example.filipedgb.cmovproj1.R;
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.User;
@@ -69,6 +70,9 @@ public class QRFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
+        ((AccountTest) getActivity()).setActionBarTitle("Código Terminal");
 
         Log.e("json","teste");
         View rootView = inflater.inflate(R.layout.fragment_qr, container, false);
