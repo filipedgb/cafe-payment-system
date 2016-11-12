@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.util.Base64;
 
@@ -169,6 +170,7 @@ public class QRcodeReader extends AppCompatActivity {
                 new_order.setListOfProducts(products);
                 new_order.setVouchers_to_use(vouchers);
                 new_order.setOrder_paid(Boolean.valueOf(map.get("order_paid").toString()));
+                new_order.setCreated_at(map.get("created_at").toString());
 
                 Log.e("Numero d vouchers:",new_order.getVouchers_to_use().size()+"");
                 processOrder(new_order);
@@ -176,8 +178,12 @@ public class QRcodeReader extends AppCompatActivity {
             }
         }
     }
+    private static double round (double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
 
-    public void processOrder(Order new_order) {
+    public void processOrder(final Order new_order) {
         TextView tv= new TextView(getApplicationContext());
 
         //create order code
@@ -188,32 +194,162 @@ public class QRcodeReader extends AppCompatActivity {
         n=rand.nextInt(9); code+=n;
 
         //get user name
-        LayoutInflater inflator= getLayoutInflater();
-        final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final LayoutInflater inflator= getLayoutInflater();
+      //  final View orderView=inflator.inflate(R.layout.content_order_history,null);
+       // ((RelativeLayout)orderView.findViewById(R.id.relativelayoutparentOrder)).setPadding(0,0,0,0);
+
+        final String finalCode = code;
+
+        LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
+
+        final View orderViewFull=inflator.inflate(R.layout.content_order_history,null);
+        ((RelativeLayout)orderViewFull.findViewById(R.id.relativelayoutparentOrder)).setPadding(0,0,0,0);
+        ((TextView) orderViewFull.findViewById(R.id.codeProduct)).setText("nº: "+finalCode);
+        ((TextView) orderViewFull.findViewById(R.id.hours_history)).setText(new_order.getCreated_at().substring(11));
+        ((TextView) orderViewFull.findViewById(R.id.date_history)).setText(new_order.getCreated_at().substring(0,9));
+        Double price_db=new_order.getOrder_price();
+        ((TextView) orderViewFull.findViewById(R.id.tv_price)).setText(round(price_db,2)+"€");
+
+        if(((LinearLayout) orderViewFull.findViewById(R.id.linearlayoutproducts)).getChildCount() > 0)
+            ((LinearLayout) orderViewFull.findViewById(R.id.linearlayoutproducts)).removeAllViews();
+
+        if(new_order.getListOfProducts()!=null)
+        {
+            for (final String key : new_order.getListOfProducts().keySet())
+            {
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference productRef = database.getReference("products");
+                productRef.keepSynced(true);
+
+                productRef.child(key).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+
+                        LinearLayout linearlayoutproducts=(LinearLayout)orderViewFull.findViewById(R.id.linearlayoutproducts);
+
+                        final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
+                        RelativeLayout rel= (RelativeLayout) orderView.findViewById(R.id.relativelayoutTerminalorder);
+                        final float scale = getResources().getDisplayMetrics().density;
+                        int pixels5 = (int) (5 * scale + 0.5f);
+                        int pixels10 = (int) (10 * scale + 0.5f);
+
+                        rel.setPadding(pixels10,pixels5,pixels10,pixels5);
+
+                        Log.e("teste",key+"");
+
+                        Log.e("teste",new_order.getListOfProducts().get(key)+"");
+//                        double price= (double) snapshot.child("price").getValue();
+                        Log.e("array",new_order.getListOfProducts().toString());
+                        //int  number=  new_order.getListOfProducts().get(key).intValue();
+                        String number_Str= new_order.getListOfProducts().get(key)+"";
+                        number_Str=number_Str.substring(0,number_Str.length()-2);
+
+                        Double number=  Double.parseDouble( new_order.getListOfProducts().get(key)+"");
+                        Double price=  Double.parseDouble( snapshot.child("price").getValue()+"");
+
+
+                        ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(number_Str+"  "+snapshot.child("name").getValue());
+                        ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText(round(number*price,2)+"€");
+
+
+                        linearlayoutproducts.addView(orderView);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
+            }
+        }
+
+        if(new_order.getVouchers_to_use()!=null)
+        {
+            Iterator it = new_order.getVouchers_to_use().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                Log.e("lol",pair.getKey() + " = " + pair.getValue());
+
+
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                DatabaseReference productRef = database.getReference("vouchers").child(pair.getKey().toString().replaceAll("\\s+",""));
+                productRef.keepSynced(true);
+
+                productRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+
+                        Voucher voucherObj = snapshot.getValue(Voucher.class);
+                        if(voucherObj == null)
+                        {
+                            Log.e("null","");
+                        }
+
+                        LinearLayout linearlayoutproducts=(LinearLayout)orderViewFull.findViewById(R.id.listvouchershistory);
+
+                        final View orderView=inflator.inflate(R.layout.content_oder_termianl,null);
+                        RelativeLayout rel= (RelativeLayout) orderView.findViewById(R.id.relativelayoutTerminalorder);
+                        final float scale = getResources().getDisplayMetrics().density;
+                        int pixels5 = (int) (5 * scale + 0.5f);
+                        int pixels10 = (int) (10 * scale + 0.5f);
+
+                        rel.setPadding(pixels10,pixels5,pixels10,pixels5);
+
+                        String name="";
+                         if(voucherObj.getType() ==0)
+                        {
+                            name="Café Grátis";
+                        }
+                        else if(voucherObj.getType() ==1)
+                        {
+                            name="Pipocas Grátis";
+                        }
+                        else if(voucherObj.getType() ==2)
+                        {
+                            name="Desconto 5%";
+                        }
+                        ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(name);
+                        ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText("");
+
+
+                        linearlayoutproducts.addView(orderView);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+                });
+
+
+
+
+
+
+                it.remove(); // avoids a ConcurrentModificationException
+            }
+
+        }
+
+
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userRef = database.getReference("user_meta");
         userRef.keepSynced(true);
-        final String finalCode = code;
-        userRef.child(new_order.getUser_code()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ((TextView) orderView.findViewById(R.id.nameOrderTerminal)).setText(dataSnapshot.child("name").getValue().toString());
-                ((TextView) orderView.findViewById(R.id.codeOrderTerminal)).setText(finalCode);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
 
-        //add code order to terminal screen
-        LinearLayout llcodes=(LinearLayout) findViewById(R.id.linearlayout_terminalcodes);
-        llcodes.addView(orderView);
 
-        saveToFirebase(new_order);
-        saveToFirebaseByUser(new_order);
-        updateTotalMoneySpent(new_order);
-        checkNewVouchers(new_order);
+        llcodes.addView(orderViewFull);
+
+
+      //  saveToFirebase(new_order);
+      //  saveToFirebaseByUser(new_order);
+      //  updateTotalMoneySpent(new_order);
+       // checkNewVouchers(new_order);
 
     }
 

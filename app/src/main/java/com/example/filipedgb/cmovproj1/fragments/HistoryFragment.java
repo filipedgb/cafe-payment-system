@@ -133,6 +133,7 @@ public class HistoryFragment extends Fragment {
                         @Override
                         public void onCancelled(DatabaseError databaseError) { }
                     });
+
                     l.addView(ordersView);
                 }
             }

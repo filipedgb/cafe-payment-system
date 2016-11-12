@@ -106,6 +106,7 @@ public class QRFragment extends Fragment {
         jsonMap.put("listOfProducts",orderQr.getListOfProducts());
         jsonMap.put("order_paid",orderQr.getOrder_paid());
         jsonMap.put("vouchers",orderQr.getVouchers_to_use());
+        jsonMap.put("created_at",orderQr.getCreated_at());
 
 
         String jsonInString = gson.toJsonTree(jsonMap).toString();
