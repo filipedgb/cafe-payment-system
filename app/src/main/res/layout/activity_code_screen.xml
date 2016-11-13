@@ -19,7 +19,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:id="@+id/text_alert_code"
-        tools:text="Por motivos de segurança"
+        tools:text="Por motivos de segurança, irá ser pedido um código a cada compra.\n\nO seu código é:"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:fontFamily="sans-serif"
         android:textColor="@color/colorPrimaryDark"

@@ -173,8 +173,12 @@ public class QRcodeReader extends AppCompatActivity {
                 new_order.setCreated_at(map.get("created_at").toString());
 
                 Log.e("Numero d vouchers:",new_order.getVouchers_to_use().size()+"");
-                processOrder(new_order);
-
+                if(vouchers.size()==0){
+                    processOrder(new_order);
+                }
+                else{
+                    checkVouchersValidity(new_order);
+                }
             }
         }
     }
