@@ -66,6 +66,9 @@ public class QRcodeReader extends AppCompatActivity {
 
         app= FirebaseApp.getInstance();
         auth= FirebaseAuth.getInstance(app);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database.getReference("user_meta").keepSynced(true);
+        database.getReference("blacklist").keepSynced(true);
 
 
         boolean finish = getIntent().getBooleanExtra("finishQR", false);
@@ -492,6 +495,19 @@ public class QRcodeReader extends AppCompatActivity {
                                     if(!blacklisted) {
                                         Log.e("ACEITE", "Vai processar a ORDER");
                                         processOrder(order);
+                                    }
+                                    else {
+                                        new AlertDialog.Builder(QRcodeReader.this)
+                                                .setTitle("Conta Bloqueada")
+                                                .setMessage("A sua conta foi bloqueada porque usou um voucher inválido.\nContacte um administrador para mais informação.")
+                                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // continue with delete
+                                                    }
+                                                })
+                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                .show();
+
                                     }
 
 

@@ -113,8 +113,9 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         boolean error = false;
+        Log.e("name","."+name+".");
 
-        if (name == "") {
+        if (name.equals("")) {
             ((TextView) findViewById(R.id.name_register)).setError("Preencha este campo");
             error = true;
         }
@@ -122,19 +123,18 @@ public class RegisterActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.email_register)).setError("Preencha este campo correctamente");
             error = true;
         }
-        if (username == "") {
+        if (username .equals("")) {
             ((TextView) findViewById(R.id.username_register)).setError("Preencha este campo");
             error = true;
         }
-        if (password == "") {
+        if (password.equals("")) {
             ((TextView) findViewById(R.id.password_register)).setError("Preencha este campo");
             error = true;
         }
-        if (cardNumber == "") {
-            //((TextView) findViewById(R.id.card_register)).setError("Preencha este campo");
+        if (cardNumber.equals("")) {
             error = true;
         }
-        if(cardDate== "-")
+        if(cardDate.equals("-"))
         {
             error = true;
         }
