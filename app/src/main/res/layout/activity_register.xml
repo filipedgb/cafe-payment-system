@@ -90,25 +90,22 @@
                 android:layout_centerHorizontal="true"
                 android:src="@mipmap/ic_launcher" />
 
+
+
             <com.devmarvel.creditcardentry.library.CreditCardForm
                 android:id="@+id/form_no_zip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-
-                android:padding="3dp"
+                android:padding="15dp"
                 app:card_number_hint="XXXX XXXX XXXX XXXX"
+                app:helper_text_color="@color/text_helper_color"
                 app:include_zip="false"
-                app:input_background="@drawable/background"
-                app:hint_text_color="@color/colorPrimaryDark"
                 android:layout_below="@+id/password_register"
                 android:layout_alignLeft="@+id/password_register"
                 android:layout_alignStart="@+id/password_register"
                 android:layout_alignRight="@+id/password_register"
-                android:layout_alignEnd="@+id/password_register" >
+                android:layout_alignEnd="@+id/password_register"/>
 
-
-            </com.devmarvel.creditcardentry.library.CreditCardForm>
 
             <Button
                 android:layout_width="wrap_content"

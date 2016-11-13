@@ -54,6 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String username;
     private String password;
     private String cardNumber;
+    private String cardDate;
     private String code;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -107,6 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
         username = ((EditText)findViewById(R.id.username_register)).getText().toString();
         password = ((EditText)findViewById(R.id.password_register)).getText().toString();
         cardNumber =((CreditCardForm) findViewById(R.id.form_no_zip)).getCreditCard().getCardNumber().toString();
+        cardDate = ((CreditCardForm) findViewById(R.id.form_no_zip)).getCreditCard().getExpMonth()+"-"+((CreditCardForm) findViewById(R.id.form_no_zip)).getCreditCard().getExpYear();
 
 
 
@@ -130,6 +132,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if (cardNumber == "") {
             //((TextView) findViewById(R.id.card_register)).setError("Preencha este campo");
+            error = true;
+        }
+        if(cardDate== "-")
+        {
             error = true;
         }
 
@@ -166,8 +172,12 @@ public class RegisterActivity extends AppCompatActivity {
 
                     Log.e("teste",auth.getCurrentUser().getUid()+"");
                     User user= new User(name,cardNumber,code,username);
+                    user.setCardDate(cardDate);
 
                     dbRef.child("user_meta").child(auth.getCurrentUser().getUid()).setValue(user);
+                    final DatabaseReference ref = database.getReference("blacklist");
+                    ref.keepSynced(true);
+                    ref.child((auth.getCurrentUser().getUid())).setValue(false);
 
                     Log.e("register","successful");
 

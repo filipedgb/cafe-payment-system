@@ -9,6 +9,8 @@ public class User {
     private String uid;
     private String name;
     private String cardNumber;
+
+    private String cardDate;
     private String code;
     private String username;
     private boolean admin;
@@ -68,6 +70,14 @@ public class User {
         this.code = code;
     }
 
+
+    public String getCardDate() {
+        return cardDate;
+    }
+
+    public void setCardDate(String cardDate) {
+        this.cardDate = cardDate;
+    }
 
     public String getUsername() {
         return username;

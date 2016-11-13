@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.example.filipedgb.cmovproj1.classes.Order;
 import com.example.filipedgb.cmovproj1.classes.User;
@@ -39,7 +40,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -173,15 +177,104 @@ public class QRcodeReader extends AppCompatActivity {
                 new_order.setCreated_at(map.get("created_at").toString());
 
                 Log.e("Numero d vouchers:",new_order.getVouchers_to_use().size()+"");
-                if(vouchers.size()==0){
-                    processOrder(new_order);
-                }
-                else{
-                    checkVouchersValidity(new_order);
-                }
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference blacklistRef = database.getReference("blacklist");
+                blacklistRef.keepSynced(true);
+                final String userId_new_order=new_order.getUser_code();
+                final  HashMap<String,String> vouchers_final=vouchers;
+                final Order order_Final=new_order;
+                Log.e("userid",userId_new_order);
+                blacklistRef.child(userId_new_order).keepSynced(true);
+                blacklistRef.child(userId_new_order).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(!dataSnapshot.getValue(Boolean.class))
+                        {
+                            DatabaseReference card = database.getReference("user_meta");
+                            card.keepSynced(true);
+                            card.child(userId_new_order).child("cardDate").keepSynced(true);
+                            card.child(userId_new_order).child("cardDate").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String string = dataSnapshot.getValue(String.class);
+                                    String[] parts = string.split("-");
+                                    String month = parts[0]; // 004
+                                    String year = "20"+ parts[1]; // 034556
+                                    int month_int= Integer.parseInt(month);
+                                    int year_int=Integer.parseInt(year);
+                                    DateFormat df = new SimpleDateFormat("MM-yyyy");
+                                    String date = df.format(Calendar.getInstance().getTime());
+                                    Log.e("date",date);
+                                    String[] parts2 = date.split("-");
+                                    int month_int_real=Integer.parseInt(parts2[0]);
+                                    int year_int_real=Integer.parseInt(parts2[1]);
+                                    Log.e("card",month_int+"-"+year_int);
+                                    Log.e("card",month_int_real+"-"+year_int_real);
+                                    if((year_int_real==year_int && month_int_real>=month_int) || (year_int_real<year_int))
+                                    {
+                                        if(vouchers_final.size()==0){
+                                            processOrder(order_Final);
+                                        }
+                                        else{
+                                            checkVouchersValidity(order_Final);
+                                        }
+                                    }
+                                    else {
+                                        Log.e("userid",userId_new_order);
+                                        Context context = QRcodeReader.this;
+                                        new AlertDialog.Builder(context)
+                                                .setTitle("Conta Bloqueada")
+                                                .setMessage("A sua conta foi bloqueada porque usou um cartão inválido.\nContacte um administrador para mais informação.")
+                                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // continue with delete
+                                                    }
+                                                })
+                                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                                .show();
+                                        blackListUser(userId_new_order);
+                                        Log.e("card","wrong date");
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+                        }
+                        else {
+                            Log.e("blacklist","black");
+                            Context context = QRcodeReader.this;
+                            new AlertDialog.Builder(context)
+                                    .setTitle("Conta Bloqueada")
+                                    .setMessage("Contacte um administrador para mais informação.")
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // continue with delete
+                                        }
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            blackListUser(userId_new_order);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
             }
         }
     }
+
     private static double round (double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
@@ -336,9 +429,6 @@ public class QRcodeReader extends AppCompatActivity {
 
 
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference("user_meta");
-        userRef.keepSynced(true);
-
 
 
         llcodes.addView(orderViewFull);
@@ -357,6 +447,7 @@ public class QRcodeReader extends AppCompatActivity {
         /* Verifies connection */
         boolean connected = true;
         final boolean accepted = false;
+        final String userID_new_order=order.getUser_code();
 
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -461,6 +552,18 @@ public class QRcodeReader extends AppCompatActivity {
                                     Log.e("VoucherVerification", "Successful.");
                                 }
                                 else{
+                                    Context context = QRcodeReader.this;
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Conta Bloqueada")
+                                            .setMessage("A sua conta foi bloqueada porque usou um voucher inválido.\nContacte um administrador para mais informação.")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    // continue with delete
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+
                                     Log.e("VoucherVerification", "Failed.");
                                     blackListUser(order.getUser_code());
                                     blacklisted = true;
@@ -520,10 +623,10 @@ public class QRcodeReader extends AppCompatActivity {
     }
 
     public void blackListUser(String userId) {
-        final DatabaseReference ref = database.getReference("blacklist");
+        FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database2.getReference("blacklist");
         ref.keepSynced(true);
-        String key = ref.push().getKey();
-        ref.child(key).setValue(userId);
+        ref.child(userId).setValue(true);
     }
 
     private boolean isNetworkAvailable() {
