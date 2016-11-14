@@ -659,7 +659,7 @@ public class QRcodeReader extends AppCompatActivity {
         ref.keepSynced(true);
 
         if(order.getOrder_price() > 20) {
-            Voucher voucher = new Voucher(auth.getCurrentUser().getUid(), RandomUtils.nextInt(0,1));
+            Voucher voucher = new Voucher(order.getUser_code(), RandomUtils.nextInt(0,1));
             String key = ref.push().getKey();
             voucher.setSerial(key);
             order.setOrder_id(key);
@@ -668,7 +668,7 @@ public class QRcodeReader extends AppCompatActivity {
             DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
             mOrderReference.keepSynced(true);
 
-            mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
+            mOrderReference.child(order.getUser_code().toString()).push().setValue(key);
         }
     }
 
@@ -678,7 +678,7 @@ public class QRcodeReader extends AppCompatActivity {
         final DatabaseReference userReference = database.getReference();
         userReference.keepSynced(true);
 
-        userReference.child("user_meta").child(auth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
+        userReference.child("user_meta").child(order.getUser_code()).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -686,18 +686,18 @@ public class QRcodeReader extends AppCompatActivity {
                         Double old_money = user.getMoneySpent();
                         Double new_money = user.getMoneySpent()+order.getOrder_price();
 
-                        userReference.child("user_meta").child(auth.getCurrentUser().getUid()).child("moneySpent").setValue(new_money);
+                        userReference.child("user_meta").child(order.getUser_code()).child("moneySpent").setValue(new_money);
 
                         /* Check if user's spent money is a multiple of 100 for vouchers */
                         if( ((int)((old_money%1000)/100)) !=  ((int) ((new_money%1000)/100)) ) { // donwload dos codigos comparar o numero das centenas
                             final DatabaseReference ref = database.getReference("vouchers");
-                            Voucher voucher = new Voucher(auth.getCurrentUser().getUid(),2);
+                            Voucher voucher = new Voucher(order.getUser_code(),2);
                             String key = ref.push().getKey();
                             voucher.setSerial(key);
                             order.setOrder_id(key);
                             ref.child(key).setValue(voucher);
                             DatabaseReference mOrderReference = database.getReference("vouchers_by_user");
-                            mOrderReference.child(auth.getCurrentUser().getUid().toString()).push().setValue(key);
+                            mOrderReference.child(order.getUser_code().toString()).push().setValue(key);
                         }
                     }
 
