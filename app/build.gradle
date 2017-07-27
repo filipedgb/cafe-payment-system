@@ -22,12 +22,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:24.2.1'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
-    compile 'com.google.firebase:firebase-auth:9.8.00'
-    compile 'com.google.firebase:firebase-storage:9.8.00'
-    compile 'com.google.android.gms:play-services:9.8.00'
+    compile 'com.google.firebase:firebase-auth:11.0.2'
+    compile 'com.google.firebase:firebase-storage:11.0.2'
+    compile 'com.google.android.gms:play-services:11.0.2'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.google.zxing:core:3.3.0'
     compile 'org.apache.commons:commons-lang3:3.4'
@@ -43,6 +43,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     // FirebaseUI Storage only
     compile 'com.firebaseui:firebase-ui-storage:0.6.0'
+    //compile 'com.google.firebase:firebase-core:11.0.2'
 
     testCompile 'junit:junit:4.12'
 }
